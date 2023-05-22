@@ -108,7 +108,7 @@ const config = {
   geoRouting: 'on',
   fallbackRouting: 'on',
   links: 'on',
-  imsClientId: 'milo',
+  imsClientId: 'feds-milo-local',
   codeRoot: '/libs',
   locales,
   prodDomains,
