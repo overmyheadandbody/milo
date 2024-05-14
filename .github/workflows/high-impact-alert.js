@@ -5,6 +5,7 @@ const {
 
 const main = async (params) => {
   const { context } = params;
+  console.log('Context is', context);
 
   try {
     if (context.payload.label.name === 'high-impact') {
