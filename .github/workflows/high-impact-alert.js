@@ -4,11 +4,15 @@ const {
 } = require('./helpers.js');
 
 const main = async (params) => {
-  github = params.github;
+  const { context } = params;
 
   try {
-    console.log('github data is', github);
-    console.log('context data is', params.context);
+    if (context.payload.label.name === 'high-impact') {
+      console.log('High impact label detected');
+    } else {
+      console.log('No high impact label detected');
+    }
+    // html_url
     // slackNotification('Testing Bar', process.env.MILO_COMMUNITY_SLACK_WEBHOOK);
   } catch (error) {
     console.error(error);
