@@ -7,8 +7,8 @@ const main = async (params) => {
   const { context } = params;
 
   try {
-    console.log('Context is', context);
     if (context.payload.label.name === 'high-impact') {
+      const { html_url, number, title } = context.payload.pull_request;
       console.log('High impact label detected, sending Slack notification');
       slackNotification(`:alert: High Impact PR has been opened: <${html_url}|${number}: ${title}>.` +
       `Please prioritize testing the proposed changes.`, process.env.MILO_COMMUNITY_SLACK_WEBHOOK);
