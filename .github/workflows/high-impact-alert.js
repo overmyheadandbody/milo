@@ -8,12 +8,12 @@ const main = async (params) => {
 
   try {
     if (context.payload.label.name === 'high-impact') {
-      console.log('High impact label detected');
+      console.log('High impact label detected, sending Slack notification');
+      slackNotification(`:alert: High Impact PR has been opened: <${html_url}|${number}: ${title}>.` +
+      `Please prioritize testing the proposed changes.`, process.env.MILO_COMMUNITY_SLACK_WEBHOOK);
     } else {
       console.log('No high impact label detected');
     }
-    // html_url
-    // slackNotification('Testing Bar', process.env.MILO_COMMUNITY_SLACK_WEBHOOK);
   } catch (error) {
     console.error(error);
   }
