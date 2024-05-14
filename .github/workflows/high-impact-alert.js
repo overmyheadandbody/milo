@@ -4,7 +4,8 @@ const {
 } = require('./helpers.js');
 
 const main = async (params) => {
-  const { context } = params;
+  const { github, context } = params;
+  console.log('Github is', github);
   console.log('Context is', context);
 
   try {
