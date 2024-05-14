@@ -21,4 +21,3 @@ jobs:
           script: |
             const main = require('./.github/workflows/high-impact-alert.js')
             main({ github, context })
-          if: contains(github.event.label.name, 'high-impact')
