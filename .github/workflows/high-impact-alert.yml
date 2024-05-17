@@ -10,6 +10,7 @@ env:
 
 jobs:
   send_alert:
+    if: github.repository_owner == 'overmyheadandbody'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
