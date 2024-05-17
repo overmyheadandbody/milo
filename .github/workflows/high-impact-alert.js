@@ -4,9 +4,7 @@ const {
 } = require('./helpers.js');
 
 const main = async (params) => {
-  const { github, context } = params;
-  console.log('Github is', github);
-  console.log('Context is', context);
+  const { context } = params;
 
   try {
     if (context.payload.label.name === 'high-impact') {
@@ -23,11 +21,8 @@ const main = async (params) => {
 };
 
 if (process.env.LOCAL_RUN) {
-  const { github, context } = getLocalConfigs();
-  main({
-    github,
-    context,
-  });
+  const { context } = getLocalConfigs();
+  main({ context });
 }
 
 module.exports = main;
