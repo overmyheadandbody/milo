@@ -271,7 +271,7 @@ export function addAccessibilityControl(videoString, videoAttrs, indexOfVideo, t
   return `
     <div class='video-container video-holder'>${videoString}
       <a class='pause-play-wrapper' role='button' tabindex=${tabIndex} aria-pressed=true video-index=${indexOfVideo}>
-        <div class='offset-filler ${videoAttrs.includes('autoplay') ? 'is-playing' : ''}'>  
+        <div class='offset-filler ${videoAttrs.includes('autoplay') ? 'is-playing' : ''}'>
           <img class='accessibility-control pause-icon' src='${fedRoot}/federal/assets/svgs/accessibility-pause.svg'/>
           <img class='accessibility-control play-icon' src='${fedRoot}/federal/assets/svgs/accessibility-play.svg'/>
         </div>
@@ -481,6 +481,17 @@ export function decorateAnchorVideo({ src = '', anchorTag }) {
     options: { rootMargin: '1000px' },
     callback: () => {
       videoEl?.appendChild(createTag('source', { src, type: 'video/mp4' }));
+    },
+  });
+  createIntersectionObserver({ // having two intersection observers is not ideal, they should be combined
+    el: videoEl,
+    options: { rootMargin: '0px' },
+    once: false,
+    newCallback: (target, entry) => {
+      if (!entry.isIntersecting && !target.paused) {
+        console.log('pausing');
+        target.pause();
+      }
     },
   });
   if (accessibilityEnabled) {

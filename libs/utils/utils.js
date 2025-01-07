@@ -1455,13 +1455,14 @@ export function parseEncodedConfig(encodedConfig) {
   return null;
 }
 
-export function createIntersectionObserver({ el, callback, once = true, options = {} }) {
+// having two callbacks is of course a bad solution, this needs to be consolidated
+export function createIntersectionObserver({ el, callback, newCallback, once = true, options = {} }) {
   const io = new IntersectionObserver((entries, observer) => {
     entries.forEach(async (entry) => {
       if (entry.isIntersecting) {
         if (once) observer.unobserve(entry.target);
-        callback(entry.target, entry);
-      }
+        callback?.(entry.target, entry);
+      } else newCallback?.(entry.target, entry);
     });
   }, options);
   io.observe(el);
