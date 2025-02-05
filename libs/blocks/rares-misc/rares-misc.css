@@ -1,0 +1,9 @@
+.rares-misc {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-m) 0;
+}
+
+.rares-misc > div {
+  max-width: 1200px;
+}
