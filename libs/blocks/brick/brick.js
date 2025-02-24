@@ -13,6 +13,12 @@ const blockTypeSizes = {
   default: ['xl', 'm', 'l'],
 };
 
+function testFunction(str) {
+  console.log('Test string is', str);
+}
+
+testFunction('First PR');
+
 function getBlockSize(el) {
   const sizes = Object.keys(blockTypeSizes);
   const size = sizes.find((s) => el.classList.contains(`${s}`)) || 'default';
