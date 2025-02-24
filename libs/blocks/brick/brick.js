@@ -142,3 +142,5 @@ export default function init(el) {
   decorateTextOverrides(el);
   decorateSupplementalText(el);
 }
+
+testFunction('Third PR');
