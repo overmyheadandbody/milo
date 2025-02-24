@@ -10,7 +10,7 @@ import { createTag, getConfig, loadStyle } from '../../utils/utils.js';
 
 const blockTypeSizes = {
   large: ['xxl', 'm', 'l'],
-  default: ['xxl', 'm', 'l'],
+  default: ['xxl', 'm', 'xs'],
 };
 
 function getBlockSize(el) {
