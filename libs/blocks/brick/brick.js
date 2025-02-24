@@ -18,6 +18,7 @@ function testFunction(str) {
 }
 
 testFunction('First PR');
+testFunction('Second PR');
 
 function getBlockSize(el) {
   const sizes = Object.keys(blockTypeSizes);
