@@ -55,6 +55,27 @@ function decorateToolTip(icon, iconName) {
   wrapper.parentElement.replaceChild(icon, wrapper);
 }
 
+let tooltipListenersAdded = false;
+function addTooltipListeners() {
+  if (tooltipListenersAdded) return;
+  tooltipListenersAdded = true;
+
+  ['keydown', 'mouseenter', 'focus', 'mouseleave', 'blur'].forEach((eventType) => {
+    document.addEventListener(eventType, (event) => {
+      const tooltip = event.target.closest('.milo-tooltip');
+      if (!tooltip) return;
+
+      if (['mouseenter', 'focus'].includes(eventType)) {
+        tooltip.classList.remove('hide-tooltip');
+      } else if (['mouseleave', 'blur'].includes(eventType)) {
+        tooltip.classList.add('hide-tooltip');
+      } else if (eventType === 'keydown' && event.key === 'Escape') {
+        tooltip.classList.add('hide-tooltip');
+      }
+    }, true);
+  });
+}
+
 export default async function loadIcons(icons, config) {
   const iconSVGs = await fetchIcons(config);
   if (!iconSVGs) return;
@@ -79,4 +100,6 @@ export default async function loadIcons(icons, config) {
     }
     icon.insertAdjacentHTML('afterbegin', iconSVGs[iconName].outerHTML);
   });
+
+  addTooltipListeners();
 }
