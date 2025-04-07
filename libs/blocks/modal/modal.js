@@ -65,6 +65,10 @@ export function closeModal(modal) {
   [...document.querySelectorAll('header, main, footer')]
     .forEach((element) => element.removeAttribute('aria-disabled'));
 
+  [...document.querySelectorAll('body > *:not(.dialog-modal)')].forEach((element) => {
+    element.removeAttribute('aria-hidden');
+  });
+
   const hashId = window.location.hash.replace('#', '');
   if (hashId === modal.id) window.history.pushState('', document.title, `${window.location.pathname}${window.location.search}`);
   isDelayedModal = false;
@@ -213,6 +217,10 @@ export async function getModal(details, custom) {
     }
     if (!custom?.closeEvent) dialog.addEventListener('iframe:modal:closed', () => closeModal(dialog));
   }
+
+  [...document.querySelectorAll('body > *:not(.dialog-modal)')].forEach((element) => {
+    element.setAttribute('aria-hidden', 'true');
+  });
 
   return dialog;
 }
