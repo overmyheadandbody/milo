@@ -107,15 +107,10 @@
   --type-detail-s-size: calc(var(--font-size-multiplier, 1) * 10px);
   --type-detail-s-lh: 12px;
 
-  /* S2 Grid sizes */
-  --grid-container-width: calc(100% - 2 * var(--grid-margins-width));
-  --grid-column-width: calc(var(--grid-container-width) / 8);
-  --grid-margins-width: 16px;
-
   /* grid sizes */
-  /* --grid-container-width: 83.4%;
+  --grid-container-width: 83.4%;
   --grid-column-width: calc(var(--grid-container-width) / 12);
-  --grid-margins-width: calc((100% - var(--grid-container-width)) / 2); */
+  --grid-margins-width: calc((100% - var(--grid-container-width)) / 2);
   --grid-margins-width-10: calc((100vw - (var(--grid-column-width) * 10)) / 2);
   --grid-margins-width-8: calc((100vw - (var(--grid-column-width) * 8)) / 2);
   --grid-margins-width-6: calc((100vw - (var(--grid-column-width) * 6)) / 2);
@@ -1062,4 +1057,24 @@ a.static:active  {
 /* desktop large < 1440 */
 @media screen and (min-width: 1440px) {
   .con-block.max-width-12-desktop-large .foreground { max-width: 1200px; }
+}
+
+/* S2 Grid sizes */
+.hero-marquee {
+  --max-width: 100%;
+  --grid-container-width: calc(var(--max-width) - 2 * var(--grid-margins-width));
+  --grid-margins-width: 16px;
+}
+
+@media screen and (min-width: 600px) {
+  .hero-marquee {
+    --grid-margins-width: 32px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .hero-marquee {
+    --max-width: min(100%, 1280px);
+    --grid-margins-width: 40px;
+  }
 }
