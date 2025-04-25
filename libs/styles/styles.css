@@ -107,10 +107,15 @@
   --type-detail-s-size: calc(var(--font-size-multiplier, 1) * 10px);
   --type-detail-s-lh: 12px;
 
+  /* S2 Grid sizes */
+  --grid-container-width: calc(100% - 2 * var(--grid-margins-width));
+  --grid-column-width: calc(var(--grid-container-width) / 8);
+  --grid-margins-width: 16px;
+
   /* grid sizes */
-  --grid-container-width: 83.4%;
+  /* --grid-container-width: 83.4%;
   --grid-column-width: calc(var(--grid-container-width) / 12);
-  --grid-margins-width: calc((100% - var(--grid-container-width)) / 2);
+  --grid-margins-width: calc((100% - var(--grid-container-width)) / 2); */
   --grid-margins-width-10: calc((100vw - (var(--grid-column-width) * 10)) / 2);
   --grid-margins-width-8: calc((100vw - (var(--grid-column-width) * 8)) / 2);
   --grid-margins-width-6: calc((100vw - (var(--grid-column-width) * 6)) / 2);
@@ -910,6 +915,12 @@ a.static:active  {
 
 /* Tablet up */
 @media screen and (min-width: 600px) {
+  :root {
+    /* S2 Grid sizes */
+    --grid-column-width: calc(var(--grid-container-width) / 12);
+    --grid-margins-width: 32px;
+  }
+
   dialog {
     width: 60vw;
   }
@@ -994,6 +1005,11 @@ a.static:active  {
 
 /* desktop up */
 @media screen and (min-width: 1200px) {
+  :root {
+    /* S2 Grid sizes */
+    --grid-margins-width: 40px;
+  }
+
   .con-block.max-width-6-desktop .foreground { max-width: 600px; }
   .con-block.max-width-8-desktop .foreground { max-width: 800px; }
   .con-block.max-width-10-desktop .foreground { max-width: 1000px; }
