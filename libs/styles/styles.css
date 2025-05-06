@@ -1077,3 +1077,85 @@ a.static:active  {
 @media screen and (min-width: 1440px) {
   .con-block.max-width-12-desktop-large .foreground { max-width: 1200px; }
 }
+
+/* Mweb specific */
+@media screen and (max-width: 599px) {
+  /* General */
+  :root {
+    --type-heading-all-weight: 800;
+  }
+
+  [class^="heading-"] {
+    font-weight: var(--type-heading-all-weight);
+  }
+
+  [class^="detail-"] {
+    text-transform: unset;
+  }
+
+  [class^="detail-"] strong {
+    font-weight: 500;
+  }
+
+  /* Block specific */
+
+  /* Hero Marquee */
+  .hero-marquee .action-area a:not(.con-button) {
+    align-self: center;
+  }
+
+  /* Aside Block */
+  .section:has(.aside.large:nth-child(3)) .aside.large {
+    width: var(--grid-container-width);
+    margin: var(--spacing-s) auto;
+    border-radius: var(--l-rounded-corners);
+  }
+
+  .section:has(.aside.large:nth-child(3)) .aside.large .foreground.container {
+    width: 100%;
+    padding-bottom: 0;
+    gap: unset;
+  }
+
+  .section:has(.aside.large:nth-child(3)) .aside.large .foreground.container .text {
+    width: var(--grid-container-width);
+    margin: auto;
+  }
+
+  /* Icon block */
+  .icon-block .foreground {
+    text-align: start;
+  }
+
+  .icon-block .foreground .icon-area {
+    margin-inline: unset;
+    margin-block-end: var(--spacing-s);
+  }
+
+  .icon-block.s-icon .icon-area img {
+    height: var(--icon-size-s);
+  }
+
+  .section:has(.icon-block + .action-scroller) {
+    width: var(--grid-container-width);
+    margin: auto;
+    background: #EEE;
+    border-radius: var(--l-rounded-corners);
+  }
+
+  /* Text block */
+  .text.text-block.center {
+    text-align: start;
+  }
+
+  .text.text-block.center .action-area,
+  .text.text-block.center .icon-area {
+    justify-content: start;
+  }
+
+  .text.text-block.center .icon-area {
+    margin-block-end: var(--spacing-xs);
+  }
+
+  /* tabs also have a different design, so do merch cards */
+}
