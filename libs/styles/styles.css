@@ -1047,3 +1047,121 @@ a.static:active  {
 @media screen and (min-width: 1440px) {
   .con-block.max-width-12-desktop-large .foreground { max-width: 1200px; }
 }
+
+@media screen and (max-width: 599px) {
+  :root:has(meta[name="s2"][content="on"]) {
+    /* TODO: handle lockup sizes across different breakpoints */
+
+    /* Grid */
+    --grid-container-width: calc(100% - 2 * var(--grid-margins-width));
+    --grid-margins-width: 16px;
+
+    /* Color */
+    --text-color: #000;
+    --s2-gray-800: rgb(36 36 36);
+
+    /* Typography */
+    --type-heading-all-weight: 800;
+    --type-heading-xxl-size: calc(var(--font-size-multiplier, 1) * 40px);
+    --type-heading-xxl-lh: 1.1;
+    --type-heading-xl-size: calc(var(--font-size-multiplier, 1) * 32px);
+    --type-heading-xl-lh: 1.25;
+
+    /* Spacing */
+    --spacing-xs: 12px;
+
+    [class^="detail-"] {
+      text-transform: unset;
+
+      strong {
+        font-weight: 500;
+      }
+    }
+
+    [class^="heading-"] {
+      font-weight: var(--type-heading-all-weight);
+    }
+
+    [class^="body-"] { /* TODO: Should all body colors be set with this value? */
+      color: var(--s2-gray-800);
+    }
+
+    /* mweb-specific */
+
+    /* Hero Marquee */
+    .hero-marquee .action-area a:not(.con-button) {
+      align-self: center;
+      color: var(--s2-gray-800); /* Spec says #2c2c2c, need to clarify */
+    }
+
+    /* Aside Block */
+    .aside.large {
+      width: var(--grid-container-width);
+      margin: var(--spacing-s) auto;
+      border-radius: var(--l-rounded-corners);
+
+      .foreground.container {
+        width: 100%;
+        padding-bottom: 0;
+        gap: unset;
+
+        .text {
+          width: var(--grid-container-width);
+          margin: auto;
+        }
+      }
+    }
+
+    /* Icon block */
+    .icon-block .foreground {
+      text-align: start;
+    }
+
+    .icon-block .foreground .icon-area {
+      margin-inline: unset;
+      margin-block-end: var(--spacing-s);
+    }
+
+    .icon-block.s-icon .icon-area img {
+      height: var(--icon-size-s);
+    }
+
+    .section:has(.icon-block + .action-scroller) {
+      width: var(--grid-container-width);
+      margin: auto;
+      background: #EEE;
+      border-radius: var(--l-rounded-corners);
+    }
+
+    /* Text block */
+    .text-block {
+      text-align: start;
+
+      &.dark-tablet-up {
+
+      }
+
+      .icon-area {
+        justify-content: start;
+        margin-block-end: var(--spacing-xs);
+      }
+    }
+
+    /* tabs also have a different design, so do merch cards */
+  }
+}
+
+@media screen and (min-width: 600px) {
+  :root:has(meta[name="s2"][content="on"]) {
+    /* Text block */
+    .text-block.dark-tablet-up {
+      color: var(--color-white);
+    }
+
+    /* Con button */
+    .dark-tablet-up .con-button.outline {
+      border-color: var(--color-white);
+      color: var(--color-white);
+    }
+  }
+}
