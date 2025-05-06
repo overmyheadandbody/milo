@@ -1047,3 +1047,43 @@ a.static:active  {
 @media screen and (min-width: 1440px) {
   .con-block.max-width-12-desktop-large .foreground { max-width: 1200px; }
 }
+
+@media screen and (max-width: 599px) {
+  :root:has(meta[name="s2"][content="on"]) {
+    /* TODO: handle lockup sizes across different breakpoints */
+
+    /* Grid */
+    --grid-container-width: calc(100% - 2 * var(--grid-margins-width));
+    --grid-margins-width: 16px;
+
+    /* Color */
+    --text-color: #000;
+    --s2-gray-800: rgb(36 36 36);
+
+    /* Typography */
+    --type-heading-all-weight: 800;
+    --type-heading-xxl-size: calc(var(--font-size-multiplier, 1) * 40px);
+    --type-heading-xxl-lh: 1.1;
+    --type-heading-xl-size: calc(var(--font-size-multiplier, 1) * 32px);
+    --type-heading-xl-lh: 1.25;
+
+    /* Spacing */
+    --spacing-xs: 12px;
+
+    [class^="detail-"] {
+      text-transform: unset;
+
+      strong {
+        font-weight: 500;
+      }
+    }
+
+    [class^="heading-"] {
+      font-weight: var(--type-heading-all-weight);
+    }
+
+    [class^="body-"] { /* TODO: Should all body colors be set with this value? */
+      color: var(--s2-gray-800);
+    }
+  }
+}
