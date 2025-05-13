@@ -80,16 +80,16 @@
   --type-heading-base-lh: 1.2;
 
   /* Body (Consonant) */
-  --type-body-xxl-size: calc(var(--font-size-multiplier, 1) * 22px);
-  --type-body-xxl-lh: 33px;
-  --type-body-xl-size: calc(var(--font-size-multiplier, 1) * 20px);
-  --type-body-xl-lh: 30px;
-  --type-body-l-size: calc(var(--font-size-multiplier, 1) * 18px);
-  --type-body-l-lh: 27px;
-  --type-body-m-size: calc(var(--font-size-multiplier, 1) * 16px);
-  --type-body-m-lh: 24px;
-  --type-body-s-size: calc(var(--font-size-multiplier, 1) * 14px);
-  --type-body-s-lh: 21px;
+  --type-body-xxl-size: calc(var(--font-size-multiplier, 1) * 20px);
+  --type-body-xxl-lh: 30px;
+  --type-body-xl-size: calc(var(--font-size-multiplier, 1) * 18px);
+  --type-body-xl-lh: 27px;
+  --type-body-l-size: calc(var(--font-size-multiplier, 1) * 16px);
+  --type-body-l-lh: 24px;
+  --type-body-m-size: calc(var(--font-size-multiplier, 1) * 14px);
+  --type-body-m-lh: 21px;
+  --type-body-s-size: calc(var(--font-size-multiplier, 1) * 12px);
+  --type-body-s-lh: 18px;
   --type-body-xs-size: calc(var(--font-size-multiplier, 1) * 12px);
   --type-body-xs-lh: 18px;
   --type-body-xxs-size: calc(var(--font-size-multiplier, 1) * 12px);
@@ -98,10 +98,10 @@
   /* Detail */
   --type-detail-all-weight: 700;
   --type-detail-all-transform: uppercase;
-  --type-detail-xl-size: calc(var(--font-size-multiplier, 1) * 16px);
-  --type-detail-xl-lh: 20px;
-  --type-detail-l-size: calc(var(--font-size-multiplier, 1) * 12px);
-  --type-detail-l-lh: 15px;
+  --type-detail-xl-size: calc(var(--font-size-multiplier, 1) * 12px);
+  --type-detail-xl-lh: 15px;
+  --type-detail-l-size: calc(var(--font-size-multiplier, 1) * 10px);
+  --type-detail-l-lh: 12px;
   --type-detail-m-size: calc(var(--font-size-multiplier, 1) * 10px);
   --type-detail-m-lh: 12px;
   --type-detail-s-size: calc(var(--font-size-multiplier, 1) * 10px);
