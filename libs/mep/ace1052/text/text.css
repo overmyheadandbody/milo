@@ -396,6 +396,10 @@
   }
 
   /* Block specific */
+  .section > .text.text-block {
+    --grid-container-width: calc(100% - 2 * var(--spacing-m));
+  }
+
   .text.text-block.center {
     text-align: start;
   }
