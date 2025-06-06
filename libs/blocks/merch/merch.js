@@ -862,6 +862,7 @@ export async function buildCta(el, params) {
   cta.onceSettled().then(() => {
     const prefix = getConfig()?.locale?.prefix;
     if (!shouldAllowKrTrial(el, prefix) && prefix === '/kr' && cta.value[0]?.offerType === OFFER_TYPE_TRIAL) cta.remove();
+    else cta.style.display = 'block';
   });
 
   return cta;
