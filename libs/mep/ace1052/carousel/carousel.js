@@ -578,6 +578,7 @@ export default function init(el) {
   slides[0].classList.add('active');
   // ##mweb## Update button states after slide movement for mweb
   function handleEqualHeight() {
+    slideWrapper.style.height = `${slideWrapper.offsetHeight}px`;
     setEqualHeight(slides);
     parentArea.removeEventListener(MILO_EVENTS.DEFERRED, handleEqualHeight, true);
   }
