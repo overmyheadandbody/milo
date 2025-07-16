@@ -6,6 +6,7 @@ import {
   decorateButtons,
   handleObjectFit,
   loadCDT,
+  enhanceFullWidthBg,
 } from '../../utils/decorate.js';
 import { createTag, loadStyle, getConfig } from '../../utils/utils.js';
 
@@ -239,6 +240,7 @@ export default async function init(el) {
     const [head, ...tail] = rows;
     handleObjectFit(head);
     decorateBlockBg(el, head, { useHandleFocalpoint: true });
+    enhanceFullWidthBg(el);
     rows = tail;
   }
 

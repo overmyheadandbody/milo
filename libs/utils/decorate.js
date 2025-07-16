@@ -523,3 +523,57 @@ export function decorateAnchorVideo({ src = '', anchorTag }) {
   applyInViewPortPlay(videoEl);
   anchorTag.remove();
 }
+
+function loadImage(img) {
+  if (img.complete) return Promise.resolve();
+  img.setAttribute('loading', 'eager');
+
+  return new Promise((resolve) => {
+    ['load', 'error'].forEach((evt) => img.addEventListener(evt, resolve, { once: true }));
+  });
+}
+
+export function enhanceFullWidthBg(el) {
+  const imgEnhance = new URLSearchParams(window.location.search).get('imgEnhance');
+
+  if (imgEnhance === 'width') {
+    const imgWidthParam = new URLSearchParams(window.location.search).get('imgWidth');
+    const imgWidth = imgWidthParam ? parseInt(imgWidthParam, 10) : 2880;
+    const toEnhance = [...el.querySelectorAll('.background :is([src*="width=2000"], [srcset*="width=2000"])')];
+    if (toEnhance.length === 0) return;
+    toEnhance.forEach((source) => {
+      const toAdapt = source.src.length ? 'src' : 'srcset';
+      source[toAdapt] = source[toAdapt].replace('width=2000', `width=${imgWidth}`);
+    });
+  }
+
+  if (imgEnhance === 'compression') {
+    const toEnhance = [...el.querySelectorAll('.background :is([src*="&optimize=medium"], [srcset*="&optimize=medium"])')];
+    if (toEnhance.length === 0) return;
+    toEnhance.forEach((source) => {
+      const toAdapt = source.src.length ? 'src' : 'srcset';
+      source[toAdapt] = source[toAdapt].replace('&optimize=medium', '');
+    });
+  }
+
+  const logSize = (img) => {
+    const src = img.currentSrc;
+
+    console.log('Fetching filesize for image:', src);
+    window.fetch(src).then((r) => r.blob()).then((r) => {
+      const filesize = Math.ceil(r.size / 1000);
+      const imgSizeLog = createTag('div', { class: 'filesize-msg' }, `Image filesize: ${filesize}kB`);
+      el.appendChild(imgSizeLog);
+    });
+  };
+
+  const visibilityInterval = setInterval(() => {
+    if (el.checkVisibility()) {
+      const image = [...el.querySelectorAll('.background img')].find((img) => img.checkVisibility());
+      if (image) {
+        loadImage(image).then(() => logSize(image));
+      }
+      clearInterval(visibilityInterval);
+    }
+  }, 500);
+}

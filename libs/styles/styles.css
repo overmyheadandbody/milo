@@ -1089,3 +1089,14 @@ a.static:active  {
 @media screen and (min-width: 1440px) {
   .con-block.max-width-12-desktop-large .foreground { max-width: 1200px; }
 }
+
+.filesize-msg {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0 0 0 / 80%);
+  padding: 10px;
+  font-weight: 700;
+  color: white;
+  border-radius: 5px;
+}
