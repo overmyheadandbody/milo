@@ -197,7 +197,7 @@ html[dir="rtl"] .carousel-slides .section.carousel-slide {
 .carousel-slide.active,
 .carousel.fade .carousel-slide.active {
   opacity: 1;
-} 
+}
 
 .carousel-slides.is-ready,
 .carousel-slides.is-ready.is-reversing,
@@ -568,7 +568,7 @@ html[dir="rtl"] .carousel .move-indicators {
     left: -80%;
     transform: translateX(80%);
   }
-  
+
   .carousel.hinting-mobile .carousel-slides.is-reversing {
     transform: translateX(-80%);
   }
@@ -766,7 +766,32 @@ html[dir="rtl"] .carousel .move-indicators {
 
     transform: translateX(calc(round(down, (var(--offset) / (var(--slides) - 1)), 2px) * -1));
   }
+
+  .mweb-enabled .carousel:has(.editorial-card) .carousel-slides {
+    flex-wrap: wrap;
+    align-items: stretch;
+    transform: none !important;
+    left: initial !important;
+    transform-style: initial !important;
+    scroll-snap-type: none !important;
+    will-change: unset !important;
+  }
+
+  .mweb-enabled .carousel:has(.editorial-card) .carousel-slide {
+    flex-grow: unset;
+  }
+
+  .mweb-enabled .carousel:has(.editorial-card) .carousel-button-container {
+    display: none;
+  }
 }
+
+/** Media query between 900px and 1170px */
+/* @media (min-width: 900px) and (max-width: 1069px) {
+  .carousel[class*="show-"].m-gap .carousel-slide {
+    --slides: 2;
+  }
+} */
 
 .carousel .aria-live-container {
   position: absolute;
