@@ -1,13 +1,13 @@
 /* iconography.css
-This is consonant shared design patterns 
-dealing w/ groups of media and associated text 
+This is consonant shared design patterns
+dealing w/ groups of media and associated text
 - lockup
 - avatar
 */
 
 :root {
   /* lockup sizes */
-  --type-lockup-all-weight: 700;
+  --type-lockup-all-weight: 900;
   --type-lockup-xxl-size: 55px;
   --type-lockup-xxl-ls: -0.01em;
   --type-lockup-xl-size: 44px;
@@ -45,6 +45,7 @@ dealing w/ groups of media and associated text
   gap: var(--spacing-xs);
   margin-bottom: var(--spacing-s);
   font-weight: var(--type-lockup-all-weight);
+  font-family: adobe-he, sans-serif;
   line-height: 1.25em;
 }
 
