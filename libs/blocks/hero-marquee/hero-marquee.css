@@ -583,22 +583,12 @@ body.mweb-enabled .hero-marquee .con-block.row-text:has(.action-area) + .con-blo
   object-position: left top;
 }
 
-.hero-marquee.frameio .canvas-wrapper {
-  position: absolute;
-  inset: 0;
-}
-
-.hero-marquee.frameio canvas.silky-background {
-  min-width: 100%;
-  height: 100%;
-  aspect-ratio: 5 / 4;
-}
-
 .hero-marquee.frameio .foreground {
-  padding-top: 250px;
+  padding-top: var(--spacing-xl);
   will-change: opacity;
   opacity: calc(1 - (clamp(30, var(--progress), 70) - 30) / 40);
   transform: translateY(calc(20vh * (clamp(10, var(--progress), 70) - 10) / 60));
+  grid-template-columns: minmax(100%, 1fr) minmax(0, 1fr)
 }
 
 .hero-marquee.frameio .foreground-media {
@@ -623,5 +613,20 @@ body.mweb-enabled .hero-marquee .con-block.row-text:has(.action-area) + .con-blo
 .hero-marquee.frameio {
   display: block;
   padding-top: 0;
-  min-height: 2200px !important;
+}
+
+.hero-marquee.frameio-ambiance-video .foreground {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-marquee.frameio-ambiance-video .foreground-media {
+  top: 0;
+  transform: none;
+  height: 100%;
+
+  video {
+    object-fit: none;
+    transform: scale(1.3);
+  }
 }

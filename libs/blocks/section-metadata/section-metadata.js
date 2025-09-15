@@ -1,4 +1,5 @@
 import { handleFocalpoint } from '../../utils/decorate.js';
+import { createTag } from '../../utils/utils.js'; // FrameIO addition
 
 export function handleBackground(div, section) {
   const pic = div.background.content?.querySelector('picture');
@@ -61,6 +62,22 @@ function handleAnchor(anchor, section) {
   section.classList.add('section-anchor');
 }
 
+/* FrameIO addition */
+async function handleFrameio(frameio, section) {
+  if (!frameio || !section) return;
+
+  async function addCanvas(el) {
+    const canvasWrapper = createTag('div', { class: 'canvas-wrapper' });
+    const canvas = createTag('canvas', { class: 'silky-background' });
+    canvasWrapper.append(canvas);
+    el.append(canvasWrapper);
+    const { paint } = await import('./draw-canvas.js');
+    paint(el);
+  }
+
+  await addCanvas(section);
+}
+
 export const getMetadata = (el) => [...el.childNodes].reduce((rdx, row) => {
   if (row.children) {
     const key = row.children[0].textContent.trim().toLowerCase();
@@ -95,5 +112,6 @@ export default async function init(el) {
   if (metadata.masonry) handleMasonry(metadata.masonry.text, section);
   if (metadata.delay) handleDelay(metadata.delay.text, section);
   if (metadata.anchor) handleAnchor(metadata.anchor.text, section);
+  if (metadata.frameio) handleFrameio(metadata.frameio.text, section);
   addListAttrToSection(section);
 }

@@ -1345,3 +1345,17 @@
     padding-top: var(--spacing-xs);
   }
 }
+
+/* FrameIO overrides */
+.aside.frameio p[class*="detail-"] {
+  color: var(--color-frameio-accent);
+}
+
+.aside.frameio p[class*="body-"] {
+  color: var(--color-frameio-body--faded);
+}
+
+.aside.frameio .foreground.container {
+  display: block;
+  padding: var(--spacing-xxxs) 0;
+}

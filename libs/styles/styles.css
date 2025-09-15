@@ -39,6 +39,10 @@
   --color-info-accent-down: #3D3DB4;
   --color-info-accent-light: #DEDEF9;
 
+  /* FrameIO additions */
+  --color-frameio-accent: rgb(97 153 246 / 100%);
+  --color-frameio-body--faded: rgb(234 234 255 / 50%);
+
   /* Fonts */
   --body-font-family: 'Adobe Clean', adobe-clean, 'Trebuchet MS', sans-serif;
   --fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
@@ -191,6 +195,12 @@
 @media (min-width: 1440px) {
   :root {
     --grid-container-width: 1440px; /* FrameIO update from 1200px */
+  }
+
+  /* FrameIO addition */
+  main > .section:not(:first-child) > div,
+  main > .section:first-child > div:not(:first-child) {
+    --grid-container-width: 1080px;
   }
 }
 

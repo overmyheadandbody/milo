@@ -242,16 +242,6 @@ function handleViewportOrder(content) {
 }
 
 /* FrameIO addition */
-async function addCanvas(el) {
-  const canvasWrapper = createTag('div', { class: 'canvas-wrapper' });
-  const canvas = createTag('canvas', { class: 'silky-background' });
-  canvasWrapper.append(canvas);
-  el.prepend(canvasWrapper);
-  const { paint } = await import('./draw-canvas.js');
-  paint(el);
-}
-
-/* FrameIO addition */
 function throttle(cb, delay, { trailing = false } = {}) {
   let timer = null;
   let lastArgs = null;
@@ -283,7 +273,7 @@ let totalScrollable;
 function addIO(el) {
   const scroller = createTag('div', { class: 'scroller' });
   el.prepend(scroller);
-  totalScrollable = el.offsetHeight - window.innerHeight;
+  totalScrollable = el.offsetHeight - window.innerHeight / 2;
   window.addEventListener('scroll', throttle((e) => {
     const rect = scroller.getBoundingClientRect();
     const travelled = -(rect.top - NAV_HEIGHT);
@@ -291,7 +281,7 @@ function addIO(el) {
       (totalScrollable <= 0 ? 0 : clamp(travelled / totalScrollable, 0, 1)) * 100,
     );
     el.style.setProperty('--progress', progress);
-  }, 10));
+  }, 10), { passive: true });
 }
 
 export default async function init(el) {
@@ -408,7 +398,6 @@ export default async function init(el) {
     new IntersectionObserver(async (entries, ob) => {
       if (entries[0].isIntersecting) {
         ob.disconnect();
-        await addCanvas(el);
         addIO(el);
       }
     }).observe(el);

@@ -90,3 +90,28 @@
     grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   }
 }
+
+/* FrameIO overrides */
+.dark .columns,
+.columns.dark {
+  color: var(--color-white);
+}
+
+.columns.frameio > .row {
+  margin-bottom: 0;
+}
+
+.columns.frameio .icon {
+  color: var(--color-frameio-accent);
+}
+
+.columns.frameio h6 {
+  margin: 0;
+}
+
+.columns.frameio p {
+  font-size: var(--type-body-s-size);
+  line-height: var(--type-body-s-lh);
+  color: var(--color-frameio-body--faded);
+  margin: var(--spacing-xxs) 0;
+}
