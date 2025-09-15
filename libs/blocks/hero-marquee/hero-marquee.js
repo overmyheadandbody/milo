@@ -241,6 +241,59 @@ function handleViewportOrder(content) {
   });
 }
 
+/* FrameIO addition */
+async function addCanvas(el) {
+  const canvasWrapper = createTag('div', { class: 'canvas-wrapper' });
+  const canvas = createTag('canvas', { class: 'silky-background' });
+  canvasWrapper.append(canvas);
+  el.prepend(canvasWrapper);
+  const { paint } = await import('./draw-canvas.js');
+  paint(el);
+}
+
+/* FrameIO addition */
+function throttle(cb, delay, { trailing = false } = {}) {
+  let timer = null;
+  let lastArgs = null;
+  function tryToEnd() {
+    if (lastArgs && trailing) {
+      cb.apply(this, lastArgs);
+      lastArgs = null;
+      timer = setTimeout(tryToEnd.bind(this), delay);
+    } else {
+      timer = null;
+    }
+  }
+  return function throttled(...args) {
+    if (timer) {
+      lastArgs = args;
+      return;
+    }
+    cb.apply(this, args);
+    timer = setTimeout(tryToEnd.bind(this), delay);
+  };
+}
+
+/* FrameIO addition */
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+const NAV_HEIGHT = 80;
+let totalScrollable;
+
+/* FrameIO addition */
+function addIO(el) {
+  const scroller = createTag('div', { class: 'scroller' });
+  el.prepend(scroller);
+  totalScrollable = el.offsetHeight - window.innerHeight;
+  window.addEventListener('scroll', throttle((e) => {
+    const rect = scroller.getBoundingClientRect();
+    const travelled = -(rect.top - NAV_HEIGHT);
+    const progress = Math.ceil(
+      (totalScrollable <= 0 ? 0 : clamp(travelled / totalScrollable, 0, 1)) * 100,
+    );
+    el.style.setProperty('--progress', progress);
+  }, 10));
+}
+
 export default async function init(el) {
   el.classList.add('con-block');
   let rows = el.querySelectorAll(':scope > div');
@@ -251,7 +304,6 @@ export default async function init(el) {
     decorateBlockBg(el, head, { useHandleFocalpoint: true });
     rows = tail;
   }
-
   // get first row that's not a keyword key/value row
   const mainRowIndex = rows.findIndex((row) => {
     const firstColText = row.children[0].textContent.toLowerCase().trim();
@@ -350,4 +402,15 @@ export default async function init(el) {
   }
 
   await Promise.all(promiseArr);
+
+  /* FrameIO addition */
+  if (el.matches('.frameio')) {
+    new IntersectionObserver(async (entries, ob) => {
+      if (entries[0].isIntersecting) {
+        ob.disconnect();
+        await addCanvas(el);
+        addIO(el);
+      }
+    }).observe(el);
+  }
 }
