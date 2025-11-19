@@ -1,0 +1,19 @@
+@import "c2/tokens.primitives.css";
+@import "c2/tokens.primitives.light.css";
+@import "c2/tokens.primitives.dark.css";
+
+/* 2. Semantic layer */
+@import "c2/tokens.semantic.css";
+@import "c2/tokens.semantic.light.css";
+@import "c2/tokens.semantic.dark.css";
+
+/* 3. Responsive overrides (breakpoint-specific) - between semantic and component */
+@import "c2/tokens.responsive.mobile.css";
+@import "c2/tokens.responsive.tablet.css";
+@import "c2/tokens.responsive.desktop.css";
+@import "c2/tokens.responsive.desktop-wide.css";
+
+/* 4. Components (the top of the pyramid) */
+@import "c2/tokens.component.css";
+@import "c2/tokens.component.light.css";
+@import "c2/tokens.component.dark.css";
