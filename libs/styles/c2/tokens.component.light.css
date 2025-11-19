@@ -1,0 +1,61 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root[data-theme="light"] {
+  --button-color-border-primary-outlined-default: rgba(0, 0, 0, 0); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-primary-outlined-default: rgba(0, 0, 0, 0); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-primary-solid-default: var(--color-gray-800); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-primary-solid-hover: var(--color-gray-900); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-primary-solid-active: var(--color-gray-900); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-primary-outlined-default: var(--color-transparent-black-00); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-primary-outlined-hover: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-primary-outlined-active: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-secondary-solid-default: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-secondary-solid-hover: var(--color-transparent-black-12); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-secondary-solid-active: var(--color-transparent-black-12); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-secondary-outlined-default: var(--color-transparent-black-00); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-secondary-outlined-hover: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-secondary-outlined-active: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-negative-solid-default: var(--color-red-900); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-negative-solid-hover: var(--color-red-1000); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-negative-solid-active: var(--color-red-1000); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-accent-solid-default: var(--color-blue-900); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-accent-solid-hover: var(--color-blue-1000); /** Placeholder token: awaiting design definition for final value */
+  --button-color-background-accent-solid-active: var(--color-blue-1000); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-primary-solid-default: var(--color-gray-800); /** Placeholder token: button components need to be reworked from original s2a designs. */
+  --button-color-border-primary-solid-hover: var(--color-gray-900); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-primary-solid-active: var(--color-gray-900); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-primary-outlined-hover: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-primary-outlined-active: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-secondary-solid-default: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-secondary-solid-hover: var(--color-transparent-black-12); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-secondary-solid-active: var(--color-transparent-black-12); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-secondary-outlined-default: var(--color-gray-300); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-secondary-outlined-hover: var(--color-gray-400); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-secondary-outlined-active: var(--color-gray-400); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-negative-default: var(--color-red-900); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-negative-hover: var(--color-red-1000); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-negative-active: var(--color-red-1000); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-accent-default: var(--color-blue-900); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-accent-hover: var(--color-blue-1000); /** Placeholder token: awaiting design definition for final value */
+  --button-color-border-accent-active: var(--color-blue-1000); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-primary-solid-default: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-primary-solid-hover: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-primary-solid-active: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-primary-outlined-hover: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-primary-outlined-active: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-secondary-solid-default: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-secondary-solid-hover: var(--color-transparent-black-12); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-secondary-solid-active: var(--color-transparent-black-12); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-secondary-outlined-default: var(--color-transparent-black-08); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-secondary-outlined-hover: var(--color-transparent-black-12); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-secondary-outlined-active: var(--color-transparent-black-12); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-negative-default: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-negative-hover: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-negative-active: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-accent-default: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-accent-hover: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --button-color-content-accent-active: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --focus-ring-color-outline-default: var(--color-blue-800); /** Placeholder token: awaiting design definition for final value */
+}
