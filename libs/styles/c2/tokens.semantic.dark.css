@@ -1,0 +1,44 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root[data-theme="dark"] {
+  --color-background-utility-error-knockout: #ffffff; /** Placeholder token: awaiting design definition for final value */
+  --color-background-utility-highlight: #ffffff; /** Placeholder token: awaiting design definition for final value */
+  --color-background-utility-highlight-knockout: #ffffff; /** Placeholder token: awaiting design definition for final value */
+  --color-background-utility-info: #ffffff; /** Placeholder token: awaiting design definition for final value */
+  --color-background-utility-info-knockout: #ffffff; /** Placeholder token: awaiting design definition for final value */
+  --color-background-utility-success: #ffffff; /** Placeholder token: awaiting design definition for final value */
+  --color-background-utility-success-knockout: #ffffff; /** Placeholder token: awaiting design definition for final value */
+  --color-background-utility-warning: #ffffff; /** Placeholder token: awaiting design definition for final value */
+  --color-background-utility-warning-knockout: #ffffff; /** Placeholder token: awaiting design definition for final value */
+  --color-brand-adobe-red: #eb1000;
+  --color-brand-cc-3dar: #99e83f;
+  --color-brand-cc-il: #ff9a00;
+  --color-brand-cc-ppafx: #9999ff;
+  --color-brand-cc-ps: #3a18ff;
+  --color-background-utility-error: var(--color-red-900);
+  --color-background-default: var(--color-gray-25);
+  --color-background-default-hover: var(--color-gray-25);
+  --color-background-subtle: var(--color-gray-50);
+  --color-background-subtle-hover: var(--color-gray-50); /** Placeholder token: awaiting design definition for final value */
+  --color-background-knockout: var(--color-gray-25); /** Placeholder token: awaiting design definition for final value */
+  --color-background-brand: var(--color-brand-adobe-red); /** Placeholder token: awaiting design definition for final value */
+  --color-border-utility-error: var(--color-red-900); /** Placeholder token: awaiting design definition for final value */
+  --color-border-default: var(--color-gray-1000); /** Placeholder token: awaiting design definition for final value */
+  --color-border-default-hover: var(--color-gray-900); /** Placeholder token: awaiting design definition for final value */
+  --color-border-subtle: var(--color-gray-300); /** Placeholder token: awaiting design definition for final value */
+  --color-border-subtle-hover: var(--color-gray-400); /** Placeholder token: awaiting design definition for final value */
+  --color-border-knockout: var(--color-gray-1000); /** Placeholder token: awaiting design definition for final value */
+  --color-border-brand: var(--color-brand-adobe-red); /** Placeholder token: awaiting design definition for final value */
+  --color-border-disabled: var(--color-gray-400); /** Placeholder token: awaiting design definition for final value */
+  --color-content-utility-error: var(--color-red-900);
+  --color-content-default: var(--color-gray-800); /** Placeholder token: awaiting design definition for final value */
+  --color-content-default-hover: var(--color-gray-900);
+  --color-content-subtle: var(--color-gray-700);
+  --color-content-strong: var(--color-gray-900);
+  --color-content-knockout: var(--color-gray-1000);
+  --color-content-brand: var(--color-brand-adobe-red);
+  --color-content-disabled: var(--color-gray-400);
+  --color-content-subtle-hover: var(--color-content-subtle);
+}
