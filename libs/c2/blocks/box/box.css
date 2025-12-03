@@ -1,0 +1,4 @@
+.box {
+  padding: var(--s2a-spacing-lg);
+  background: var(--s2a-color-red-400);
+}

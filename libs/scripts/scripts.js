@@ -11,6 +11,7 @@
  */
 
 import {
+  loadBaseStyles,
   loadArea,
   loadLana,
   setConfig,
@@ -64,6 +65,25 @@ const config = {
   // taxonomyRoot: '/your-path-here',
 };
 
+export const [setLibs, getLibs] = (() => {
+  let libs;
+  return [
+    (prodLibs, location) => {
+      libs = (() => {
+        const { hostname, search } = location || window.location;
+        if (!(hostname.includes('.aem.') || hostname.includes('local'))) return prodLibs;
+        const branch = new URLSearchParams(search).get('milolibs') || 'main';
+        if (hostname.includes('local') || branch === 'local') return 'http://localhost:6456/libs';
+        return branch.includes('--') ? `https://${branch}.aem.live/libs` : `https://${branch}--milo--adobecom.aem.live/libs`;
+      })();
+      return libs;
+    }, () => libs,
+  ];
+})();
+
+const LIBS = '/libs';
+const miloLibs = setLibs(LIBS);
+
 const eagerLoad = (img) => {
   img?.setAttribute('loading', 'eager');
   img?.setAttribute('fetchpriority', 'high');
@@ -77,6 +97,8 @@ const eagerLoad = (img) => {
     eagerLoad(document.querySelector('img'));
   }
 }());
+
+(async () => { await loadBaseStyles(miloLibs); })();
 
 (async function loadPage() {
   if (getMetadata('template') === '404') window.SAMPLE_PAGEVIEWS_AT_RATE = 'high';

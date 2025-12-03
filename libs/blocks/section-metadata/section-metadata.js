@@ -12,58 +12,123 @@ const mediaQueries = {
   tablet: window.matchMedia('(min-width: 600px) and (max-width: 1199px)'),
 };
 
-const applyBackground = (colors, section) => {
-  if (colors.length === 1) {
-    const [color] = colors;
-    section.style.background = color;
-    return;
-  }
-  if (colors.length === 2) {
-    const [mobileColor, tabletDesktopColor] = colors;
-    section.style.background = mediaQueries.mobile.matches ? mobileColor : tabletDesktopColor;
-    return;
-  }
-  if (colors.length >= 3) {
-    const [mobileColor, tabletColor, desktopColor] = colors;
-    if (mediaQueries.mobile.matches) {
-      section.style.background = mobileColor;
-    } else if (mediaQueries.tablet.matches) {
-      section.style.background = tabletColor;
-    } else {
-      section.style.background = desktopColor;
-    }
-  }
-};
-
+// Same concept could be applied for masonry and other props
 export function handleBackground(div, section) {
-  const pic = div.background.content?.querySelector('picture');
-  if (pic) {
-    section.classList.add('has-background');
-    pic.classList.add('section-background');
-    handleFocalpoint(pic, div.background.content);
-    section.insertAdjacentElement('afterbegin', pic);
+  let items = [];
+  const firstText = div.background.text[0];
+
+  if (firstText?.includes('|')) {
+    // Normalize input: convert legacy pipe format into new array structure
+    const colors = firstText.split('|').map((c) => c.trim());
+    items = colors.map((color) => ({ type: 'color', value: color }));
   } else {
-    const color = div.background.content?.textContent?.trim();
-    if (color) {
-      const colors = color.split('|').map((c) => c.trim());
-      applyBackground(colors, section);
-      Object.keys(mediaQueries).forEach((key) => {
-        mediaQueries[key].addEventListener('change', () => applyBackground(colors, section), 100);
-      });
-    }
+    items = div.background.content.map((el, i) => {
+      const pic = el.querySelector('picture');
+      const video = el.querySelector('.video-container');
+      const text = div.background.text[i]?.trim();
+      if (video) return { type: 'video', value: video, el };
+      if (pic) return { type: 'image', value: pic, el };
+      if (text) return { type: 'color', value: text };
+      return null;
+    }).filter(Boolean);
   }
+
+  if (items.length === 0) return;
+
+  section.classList.add('has-background');
+
+  const binaryVP = [['mobile-only'], ['tablet-only', 'desktop-only']];
+  const allVP = [['mobile-only'], ['tablet-only'], ['desktop-only']];
+  const viewports = items.length === 2 ? binaryVP : allVP;
+
+  const bgContainer = createTag('div', { class: 'section-background' });
+
+  items.forEach((item, i) => {
+    if (item.type === 'video') {
+      if (items.length > 1 && i < viewports.length) {
+        item.value.classList.add(...viewports[i]);
+      }
+      bgContainer.append(item.value);
+    } else if (item.type === 'image') {
+      if (items.length > 1 && i < viewports.length) {
+        item.value.classList.add(...viewports[i]);
+      }
+      handleFocalpoint(item.value, item.el);
+      bgContainer.append(item.value);
+    } else if (item.type === 'color') {
+      const colorDiv = createTag('div');
+      if (items.length > 1 && i < viewports.length) {
+        colorDiv.classList.add(...viewports[i]);
+      }
+      colorDiv.style.background = item.value;
+      bgContainer.append(colorDiv);
+    }
+  });
+
+  section.insertAdjacentElement('afterbegin', bgContainer);
 }
 
 export async function handleStyle(text, section) {
   if (!text || !section) return;
-  const styles = text.split(', ').map((style) => style.replaceAll(' ', '-'));
-  const sticky = styles.find((style) => style === 'sticky-top' || style === 'sticky-bottom');
+
+  const styleSets = text.filter(Boolean).map((styleText) => (
+    styleText.split(', ').map((style) => style.replaceAll(' ', '-'))
+  ));
+
+  if (styleSets.length === 0) return;
+
+  // Handle sticky sections from any style set
+  const allStyles = styleSets.flat();
+  const sticky = allStyles.find((style) => style === 'sticky-top' || style === 'sticky-bottom');
   if (sticky) {
     const { default: handleStickySection } = await import('./sticky-section.js');
     await handleStickySection(sticky, section);
   }
-  if (styles.includes('masonry')) styles.push('masonry-up');
-  section.classList.add(...styles);
+
+  // Single style set - apply statically (backward compatibility)
+  if (styleSets.length === 1) {
+    const styles = styleSets[0];
+    if (styles.includes('masonry')) styles.push('masonry-up');
+    section.classList.add(...styles);
+    return;
+  }
+
+  // Multiple style sets - apply based on viewport
+  const applyStyles = () => {
+    let activeIndex = 0;
+
+    if (styleSets.length === 2) {
+      // Binary: mobile | tablet+desktop
+      activeIndex = mediaQueries.mobile.matches ? 0 : 1;
+    } else if (styleSets.length >= 3) {
+      // Full: mobile | tablet | desktop
+      if (mediaQueries.mobile.matches) {
+        activeIndex = 0;
+      } else if (mediaQueries.tablet.matches) {
+        activeIndex = 1;
+      } else {
+        activeIndex = 2;
+      }
+    }
+
+    // Remove all style classes from all sets
+    styleSets.forEach((styleSet) => {
+      section.classList.remove(...styleSet);
+    });
+
+    // Apply active style set
+    const activeStyles = styleSets[activeIndex];
+    if (activeStyles.includes('masonry')) activeStyles.push('masonry-up');
+    section.classList.add(...activeStyles);
+  };
+
+  // Apply initial styles
+  applyStyles();
+
+  // Add listeners for viewport changes
+  Object.keys(mediaQueries).forEach((key) => {
+    mediaQueries[key].addEventListener('change', applyStyles);
+  });
 }
 
 function handleMasonry(text, section) {
@@ -103,8 +168,8 @@ function handleAnchor(anchor, section) {
 export const getMetadata = (el) => [...el.childNodes].reduce((rdx, row) => {
   if (row.children) {
     const key = row.children[0].textContent.trim().toLowerCase();
-    const content = row.children[1];
-    const text = content?.textContent.trim().toLowerCase();
+    const content = [...row.children].slice(1);
+    const text = content.map((bp) => bp.textContent?.trim().toLowerCase());
     if (key && content) rdx[key] = { content, text };
   }
   return rdx;
@@ -162,10 +227,10 @@ export default async function init(el) {
   const metadata = getMetadata(el);
   if (metadata.style) await handleStyle(metadata.style.text, section);
   if (metadata.background) handleBackground(metadata, section);
-  if (metadata.layout) handleLayout(metadata.layout.text, section);
-  if (metadata.masonry) handleMasonry(metadata.masonry.text, section);
-  if (metadata.delay) handleDelay(metadata.delay.text, section);
-  if (metadata.anchor) handleAnchor(metadata.anchor.text, section);
-  if (metadata['collapse-ups-mobile']?.text === 'on') await handleCollapseSection(section);
+  if (metadata.layout) handleLayout(metadata.layout.text[0], section);
+  if (metadata.masonry) handleMasonry(metadata.masonry.text[0], section);
+  if (metadata.delay) handleDelay(metadata.delay.text[0], section);
+  if (metadata.anchor) handleAnchor(metadata.anchor.text[0], section);
+  if (metadata['collapse-ups-mobile']?.text[0] === 'on') await handleCollapseSection(section);
   addListAttrToSection(section);
 }

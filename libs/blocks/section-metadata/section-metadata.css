@@ -74,17 +74,43 @@
 .section.xs-padding { padding: var(--spacing-xs); }
 .section.xxs-padding { padding: var(--spacing-xxs); }
 
-.section picture.section-background {
-  display: block;
+.section .section-background > * {
   position: absolute;
   inset: 0;
-  z-index: -1;
 }
 
-.section .section-background img {
+.section .section-background :is(img, video) {
   object-fit: cover;
   height: 100%;
   width: 100%;
+}
+
+.section .section-background .video-container {
+  width: 100%;
+}
+
+.section-background .mobile-only,
+.section-background .tablet-only,
+.section-background .desktop-only {
+  display: none;
+}
+
+@media screen and (max-width: 599px) {
+  .section-background .mobile-only {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 1199px) {
+  .section-background .tablet-only {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .section-background .desktop-only {
+    display: block;
+  }
 }
 
 .section.center .content > h1,

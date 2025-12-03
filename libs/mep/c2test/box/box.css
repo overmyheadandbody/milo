@@ -1,0 +1,6 @@
+:root:has(meta[name="theme"][content="sum26"]) {
+  .box {
+    padding: var(--s2a-spacing-xl);
+    background: var(--s2a-color-blue-1200);
+  }
+}

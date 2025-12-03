@@ -289,7 +289,20 @@ function decorateLayout(el) {
   return foreground;
 }
 
-export default function init(el) {
+export default async function init(el) {
+  /* NOTE: Experimental logic to substitute authored classes
+     with centralized kit classes */
+  const kitClass = [...el.classList].find((cls) => cls.endsWith('-kit'));
+  if (kitClass) {
+    const { blockKits } = await import('../../utils/blockKits.js');
+    const blockClass = [...el.classList][0];
+    const kitClasses = blockKits?.[blockClass]?.[kitClass];
+    if (kitClasses) {
+      el.className = blockClass;
+      el.classList.add(kitClass, ...kitClasses);
+    }
+  }
+
   el.classList.add('con-block');
   const blockData = getBlockData(el);
   const blockText = decorateLayout(el);
@@ -299,4 +312,21 @@ export default function init(el) {
   decorateTextOverrides(el);
   // Override Detail with Title L style if class exists - Temporary solution until Spectrum 2
   if (el.classList.contains('l-title')) el.querySelector('[class*="detail-"]')?.classList.add('title-l');
+
+  // [...el.querySelectorAll('.foreground :is(.text, .image)')].forEach((elem) => {
+  //   elem.classList.add('enable-parallax', 'parallax-stagger-rtl');
+  // });
+
+  // el.querySelector('.foreground').classList.add('enable-parallax', 'parallax-scale-up');
+  // [...document.querySelectorAll('.section')].forEach((section) => {
+  //   section.classList.add('enable-parallax');
+  // });
+
+  if (el.classList.contains('parallax-stagger-rtl') || el.classList.contains('parallax-stagger-ltr')) {
+    const staggerElements = el.querySelectorAll('.foreground :is(.text, .image)');
+    staggerElements.forEach((elem) => {
+      const staggerClass = el.classList.contains('parallax-stagger-ltr') ? 'parallax-stagger-ltr' : 'parallax-stagger-rtl';
+      elem.classList.add('enable-parallax', staggerClass);
+    });
+  }
 }
