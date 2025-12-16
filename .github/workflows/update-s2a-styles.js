@@ -151,7 +151,7 @@ async function buildS2AStyles() {
 
   const hasChanges = updatedVars.length > 0 || newVars.length > 0 || deletedVars.length > 0;
 
-  const summary = `Synchronized --s2a- variables in ${targetFile}.
+  const summary = `Synchronized --s2a- variables in \`${TARGET_FILE}\`.
 
 **Updated variables:**
 ${updatedVars.length ? updatedVars.join('\n') : 'none'}
