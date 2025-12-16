@@ -1,10 +1,9 @@
 :root {
   /* tokens.primitives */
-  --s2a-rares: cyan;
   --s2a-border-radius-0: 0;
   --s2a-border-radius-2: 2px;
   --s2a-border-radius-4: 4px;
-  --s2a-border-radius-8: 8px;
+  --s2a-border-radius-8: 80px;
   --s2a-border-radius-16: 16px;
   --s2a-border-radius-32: 32px;
   --s2a-border-radius-round: 999px;
@@ -374,6 +373,8 @@
   &:lang(th) {
     --body-font-family: adobe-clean-thai, var(--body-font-family), adobe-clean, 'Trebuchet MS', sans-serif;
   }
+
+  --s2a-invalid-var: none;
 }
 
 .dark {
