@@ -223,25 +223,25 @@ const main = async ({ github, context }) => {
       body: summary,
     });
 
-    await github.rest.issues.addLabels({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      issue_number: pr.data.number,
-      labels: ['high-impact'],
-    });
+    // await github.rest.issues.addLabels({
+    //   owner: context.repo.owner,
+    //   repo: context.repo.repo,
+    //   issue_number: pr.data.number,
+    //   labels: ['high-impact'],
+    // });
 
-    await github.rest.pulls.requestReviewers({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      pull_number: pr.data.number,
-      reviewers: [
-        'overmyheadandbody',
-        'mokimo',
-        'robert-bogos',
-        'narcis-radu',
-      ],
-      assignees: ['SilviuLCF'],
-    });
+    // await github.rest.pulls.requestReviewers({
+    //   owner: context.repo.owner,
+    //   repo: context.repo.repo,
+    //   pull_number: pr.data.number,
+    //   reviewers: [
+    //     'overmyheadandbody',
+    //     'mokimo',
+    //     'robert-bogos',
+    //     'narcis-radu',
+    //   ],
+    //   assignees: ['SilviuLCF'],
+    // });
 
     console.log(`PR created: ${pr.data.html_url}`);
   } catch (error) {
