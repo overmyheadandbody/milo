@@ -3,6 +3,7 @@
  */
 
 :root {
+  --s2a-invalid-var: none;
   --s2a-border-radius-0: 0;
   --s2a-border-radius-2: 2px;
   --s2a-border-radius-4: 4px;
