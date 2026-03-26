@@ -1,0 +1,102 @@
+.da-rares-content {
+  position: relative;
+  height: 100%;
+
+  > div {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .media {
+    position: relative;
+    clip-path: inset(0 round var(--s2a-border-radius-md));
+    overflow: clip;
+
+    > picture {
+      display: flex;
+      height: 100%;
+    }
+
+    picture img {
+      width: 100%;
+      object-fit: cover;
+      aspect-ratio: 4 / 3;
+    }
+
+    .icon {
+      position: absolute;
+      inset-block-start: var(--s2a-spacing-md);
+      inset-inline-start: var(--s2a-spacing-md);
+      width: 24px;
+      height: 24px;
+    }
+
+    .icon img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .foreground {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2a-spacing-xs);
+    padding-block-start: var(--s2a-spacing-lg);
+    padding-inline: var(--s2a-spacing-md);
+
+    :is(h1, h2, h3, h4, h5, h6) {
+      color: var(--s2a-color-content-title);
+    }
+
+    p:has(.standalone-link) {
+      margin-block-start: calc(var(--s2a-spacing-lg) - var(--s2a-spacing-xs));
+    }
+  }
+
+  p {
+    color: var(--s2a-color-content-body-subtle);
+  }
+}
+
+@media (width >= 768px) {
+  .da-rares-content {
+    .media picture img {
+      aspect-ratio: 1480 / 670;
+    }
+
+    .foreground {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--s2a-spacing-xs) var(--s2a-spacing-lg);
+      padding-block: var(--s2a-spacing-lg) 0;
+
+      :is(h1, h2, h3, h4, h5, h6) {
+        grid-column: 1;
+      }
+
+      [class*="body-"]:not(:has(.standalone-link)) {
+        grid-column: 1;
+      }
+
+      p:has(.standalone-link) {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        margin-block-start: 0;
+      }
+    }
+  }
+}
+
+@media (width >= 1280px) {
+  .da-rares-content {
+    .media .icon {
+      inset-block-start: var(--s2a-spacing-lg);
+      inset-inline-start: var(--s2a-spacing-lg);
+    }
+
+    .foreground {
+      padding-inline: var(--s2a-spacing-lg);
+    }
+  }
+}
