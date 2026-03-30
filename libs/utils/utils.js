@@ -113,6 +113,10 @@ const C2_BLOCKS = [
   'explore-card',
   'global-footer',
   'global-navigation',
+<<<<<<< HEAD
+=======
+  'martech-metadata',
+>>>>>>> upstream/stage
   'modal',
   'news',
   'region-nav',
