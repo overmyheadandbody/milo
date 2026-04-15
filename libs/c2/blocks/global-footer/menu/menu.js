@@ -406,3 +406,4 @@ const decorateMenu = (config) => logErrorFor(async () => {
 }, 'Decorate menu failed', 'footer-menu', 'i');
 
 export default { decorateMenu, decorateLinkGroup, decorateHeadline };
+

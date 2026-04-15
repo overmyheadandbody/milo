@@ -286,3 +286,4 @@ export default async function addAriaLabels() {
     if (cta.hasAttribute('aria-label')) modifiedCTAs.push(cta);
   });
 }
+

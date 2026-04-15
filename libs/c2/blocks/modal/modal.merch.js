@@ -86,3 +86,4 @@ export default async function enableCommerceFrameFeatures({ dialog, iframe }) {
   adjustStyles({ dialog, iframe });
   window.addEventListener('message', reactToMessage);
 }
+

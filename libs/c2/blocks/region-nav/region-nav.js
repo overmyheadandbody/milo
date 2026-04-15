@@ -101,3 +101,4 @@ export default async function init(block) {
     window.lana.log(`Load: Region_Nav_Modal|locale:${config.locale.prefix?.replace('/', '') || 'us'}|country:${getCountry()}`, { sampleRate: 10, tags: 'lingo,lingo-region-nav-load', severity: 'i' });
   }
 }
+

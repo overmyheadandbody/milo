@@ -30,3 +30,4 @@ export default function init(el, a, btnFormat) {
   a.append(playIcon);
   imgLinkContainer.append(pic, a);
 }
+

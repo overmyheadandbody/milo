@@ -37,3 +37,4 @@ export function overrideUrlOrigin(link) {
   }
   return link;
 }
+

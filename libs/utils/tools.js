@@ -21,3 +21,4 @@ export async function copyToClipboard(button, copyTxt) {
     button.classList.remove('copy-success');
   }
 }
+

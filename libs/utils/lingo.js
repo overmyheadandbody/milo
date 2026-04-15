@@ -73,3 +73,4 @@ export default async function urlInQueryIndex(
   await Promise.all(matchingIndexes.map((m) => m.pathsRequest));
   return urlInMatchingIndex(matchingIndexes, sanitizedPath);
 }
+

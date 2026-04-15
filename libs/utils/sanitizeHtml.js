@@ -40,3 +40,4 @@ export function sanitizeHtml(html) {
   [htmlElem, ...htmlElem.querySelectorAll('*')].forEach(removeAttributes);
   return htmlElem.firstChild;
 }
+

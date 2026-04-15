@@ -22,3 +22,4 @@ export const getAkamaiCode = () => new Promise((resolve, reject) => {
 });
 
 export default getAkamaiCode;
+

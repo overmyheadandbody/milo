@@ -456,3 +456,4 @@ export default {
     '--welcome-container-padding-tablet': '32px',
   },
 };
+

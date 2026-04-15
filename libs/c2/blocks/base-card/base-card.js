@@ -50,3 +50,4 @@ export default function init(el) {
   el.closest('.section').classList.add('base-card-section');
   decorateViewportContent(el, decorateCard);
 }
+

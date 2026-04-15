@@ -39,3 +39,4 @@ const getUuid = async (str) => {
 }
 
 export default getUuid;
+

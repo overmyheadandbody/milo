@@ -165,3 +165,4 @@
   w.addEventListener('error', (e) => sendUnhandledError('unhandled-error', e));
   w.addEventListener('unhandledrejection', (e) => sendUnhandledError('unhandled-rejection', e));
 }());
+

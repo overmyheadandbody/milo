@@ -194,3 +194,4 @@ export default async function init(el) {
   if (metadata.layout) handleStyle(metadata.layout.text, section);
   handleStickyFocus(section);
 }
+

@@ -191,3 +191,4 @@ export default async function stylePublish(sk) {
   };
   if (pageDetail && publishBtn) await checkAuthorization(pageDetail, publishBtn);
 }
+

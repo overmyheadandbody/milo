@@ -30,3 +30,4 @@ export async function getLingoActive() {
   return ['true', 'on'].includes(langFirst);
 }
 export default getLingoActive;
+

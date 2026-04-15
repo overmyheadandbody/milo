@@ -143,3 +143,4 @@ export default function webVitals(mep, { delay = 1000, sampleRate = 50 } = {}) {
   window.addEventListener('adobePrivacy:PrivacyConsent', handleEvent, { once: true });
   window.addEventListener('adobePrivacy:PrivacyCustom', handleEvent, { once: true });
 }
+

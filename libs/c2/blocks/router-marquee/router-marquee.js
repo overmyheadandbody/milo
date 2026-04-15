@@ -706,3 +706,4 @@ export default function init(el) {
     initViewportAutoplay();
   });
 }
+

@@ -273,3 +273,4 @@ export default async function init(el) {
     }
   }).observe(document.body, { childList: true, subtree: true });
 }
+

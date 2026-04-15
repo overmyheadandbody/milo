@@ -15,3 +15,4 @@ export default async function injectBlock(blockNamesStr) {
     return loadBlock(blockEl);
   }));
 }
+

@@ -9,3 +9,4 @@ export default function loadFavicon(createTag, config, getMetadata) {
   favicon.insertAdjacentHTML('afterend', tags);
   favicon.href = `${favBase}.ico`;
 }
+

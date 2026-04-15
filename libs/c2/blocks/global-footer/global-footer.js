@@ -737,3 +737,4 @@ export default function init(block) {
     return null;
   }
 }
+

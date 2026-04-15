@@ -82,3 +82,4 @@ const sanitizeComment = (comment) => {
 };
 
 export default sanitizeComment;
+

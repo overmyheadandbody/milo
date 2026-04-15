@@ -37,3 +37,4 @@ export default function init({ createTag, loadBlock, loadScript, loadStyle }) {
   // Color code publish button
   stylePublish(sk);
 }
+

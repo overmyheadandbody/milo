@@ -28,3 +28,4 @@ export default function loadFonts(locale, loadStyle) {
   }
   return dynamicTypekit(locale.tk);
 }
+

@@ -10,3 +10,4 @@ export function debounce(callback, time = 300) {
 }
 
 export default { debounce };
+

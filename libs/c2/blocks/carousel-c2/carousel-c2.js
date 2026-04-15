@@ -352,3 +352,4 @@ export default function init(el) {
   setAriaHiddenAndTabIndex(slides, slides[1]);
   attachListeners(carouselEls);
 }
+

@@ -50,3 +50,4 @@ export default function init(el) {
   linkContainer.append(contentDiv);
   firstRow.prepend(linkContainer);
 }
+

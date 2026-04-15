@@ -460,3 +460,4 @@ export const setupFooterKeyboardNav = async () => {
   footerKeyboardNav = footerKeyboardNav || new FooterKeyboardNavigation();
   return footerKeyboardNav;
 };
+

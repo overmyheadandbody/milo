@@ -57,3 +57,4 @@ export default async function getServiceConfig(suppliedOrigin, envName) {
   });
   return config;
 }
+

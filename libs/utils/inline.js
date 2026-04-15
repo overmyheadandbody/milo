@@ -26,3 +26,4 @@ export function inlineBlock(block) {
     block.classList.add('content');
   }
 }
+
