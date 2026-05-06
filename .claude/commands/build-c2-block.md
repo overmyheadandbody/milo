@@ -103,7 +103,13 @@ wait for confirmation.
 
 Use the Claude Preview MCP to show the styled block on localhost
 after the build completes. The side panel can only load localhost
-URLs, so the dev server must serve the feature branch code.
+URLs, so the dev server must serve the worktree's code.
+
+**Key constraint:** `preview_start` always launches AEM CLI from the
+current working directory (the worktree). The block files only exist
+on the remote feature branch after the block skill pushes them. The
+worktree must have both the block files and the updated `utils.js`
+for the preview to work.
 
 ### Setup
 
@@ -126,24 +132,22 @@ does not exist, create it:
 
 ### After block build (end of Phase D)
 
-The dev server runs from the main milo repo, so it must be on the
-feature branch for the block to load. ES modules are cached per
-browser session, so a stale `utils.js` from a previous branch will
-break block loading. To avoid this, stop and restart the server.
+Pull the block files from the remote feature branch into the
+worktree. This avoids switching branches in the main repo.
 
 ```bash
-# 1. Record the current branch so we can restore it later
-ORIGINAL_BRANCH=$(git -C <main-repo> branch --show-current)
+# 1. Fetch the feature branch
+git fetch upstream <feature-branch>
 
-# 2. Switch to the feature branch
-git -C <main-repo> fetch upstream <feature-branch>
-git -C <main-repo> checkout <feature-branch>
+# 2. Check out only the block files and updated utils.js
+git checkout upstream/<feature-branch> -- libs/c2/blocks/<block-name>/
+git checkout upstream/<feature-branch> -- libs/utils/utils.js
 ```
 
 Then stop any existing preview, start fresh, and navigate:
 
 ```
-preview_stop(name: "milo")
+preview_stop(name: "milo")   # or by serverId if known
 preview_start(name: "milo")
 preview_eval(serverId, expression: "window.location.href = 'http://localhost:6456/<da-path>/<page-name>'")
 ```
@@ -153,10 +157,18 @@ silently and continue. The preview is informational, not a gate.
 
 ### Restore after summary
 
-After presenting the final summary, switch back:
+After presenting the final summary, discard the checked-out files
+to return the worktree to its clean state:
 
 ```bash
-git -C <main-repo> checkout $ORIGINAL_BRANCH
+git checkout -- libs/c2/blocks/<block-name>/ libs/utils/utils.js
+```
+
+If any untracked files remain (e.g. the block directory was new),
+clean them:
+
+```bash
+git clean -fd libs/c2/blocks/<block-name>/
 ```
 
 ---
