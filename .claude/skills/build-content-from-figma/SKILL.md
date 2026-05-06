@@ -9,6 +9,66 @@ description: >
 
 # Build Content from Figma Skill
 
+## UI interactions
+
+When not in auto mode, use `AskUserQuestion` for all decisions and
+confirmations — never as plain chat text.
+- Binary confirmations (proceed, upload, publish, clean up): **Yes** / **No** options.
+- Name confirmations: **Confirm** / **Use a different name** options.
+- Production warnings: **Yes, publish to production** / **No, cancel** options.
+
+Initial text inputs (Figma URLs, DA org / repo / path) are collected
+as regular chat prompts since they require free-form text.
+
+In auto mode, skip confirmations per the Modes section below. The
+non-drafts safety gate (Phase 7a) always uses `AskUserQuestion`
+regardless of mode.
+
+## Modes
+
+**Auto and quiet are always ON by default.** Do not check environment
+variables or run any detection steps.
+
+The only way to change this:
+- Arguments include `Auto mode: false` or `Quiet mode: false`.
+- User passed `--interactive` (disables auto) or `--verbose`
+  (disables quiet).
+
+If none of the above are present, auto + quiet are on. No exceptions.
+
+### Auto mode
+
+Skip these confirmations and proceed automatically:
+
+- **Phase 1b** — accept the inferred block name without asking.
+- **Phase 1c** — skip the input confirmation table.
+- **Phase 3** — skip the diff analysis confirmation.
+- **Phase 5** — skip the HTML review.
+- **Phase 6** — proceed with upload without asking.
+- **Phase 7** — proceed with preview & publish without asking.
+- **Phase 8** — auto-clean temp folders without asking.
+
+**Never skip in auto mode:**
+- **Phase 7a** — the non-drafts publish safety gate is mandatory.
+- **Auth failures** — always stop if `da-auth-helper` returns no token.
+
+### Quiet mode
+
+- Emit short, jargon-free progress updates ("Extracting content...",
+  "Uploading images...", "Publishing page...").
+- Do not show the diff table, HTML source, or curl output.
+- Report only the DA edit URL and live URL on success.
+- On failure, describe the problem in plain English and what the user
+  should do.
+
+### Side panel
+
+Never open or display raw HTML files or SVG files in the side panel.
+They lack images and styling, so they appear broken. Report file
+paths in chat text instead.
+
+---
+
 You are creating an authored HTML document for the **C2 design system**
 by extracting content from Figma designs. The document follows the
 standard block authoring pattern and is uploaded to **DA** (Document
@@ -43,8 +103,8 @@ read when it becomes relevant.
 ### references/
 | File | Purpose |
 |------|---------|
-| `authoring-pattern.md` | HTML div structure for DA block authoring: document skeleton, viewport rows, content columns, media placement, complete examples. |
-| `token-mapping.md` | Maps `--s2a-typography-*` Figma tokens to heading levels (`h1`-`h4`), body sizes (`lg`, `md`, `sm`, `xs`), and eyebrow classification. Includes fallback heuristics. |
+| `authoring-pattern.md` | HTML structure for DA block authoring: document skeleton, viewport rows, content columns, media placement, CTA wrapping, complete examples. |
+| `token-mapping.md` | Maps `--s2a-typography-*` Figma tokens to heading levels (`h1`-`h4`), body sizes (`lg`, `md`, `sm`, `xs`), and eyebrow classification. |
 
 ### agents/
 | File | Purpose |
@@ -55,12 +115,13 @@ read when it becomes relevant.
 
 ## Inputs
 
-Collect all inputs before starting extraction work.
+Collect Figma URLs before starting extraction work. At least one is
+required.
 
 | Input | Required | Example |
 |---|---|---|
 | **Figma URL(s)** | At least one | One URL per viewport (mobile, tablet, desktop) |
-| **DA destination** (org, repo, path) | Yes | `adobe / my-repo / docs/my-page.html` |
+| **DA destination** (org, repo, path) | Auto mode: use defaults | `adobecom / milo / drafts/ldap/my-page.html` |
 
 Ask which viewport each Figma URL corresponds to. Valid viewports:
 - **Mobile** (S, up to 767 px)
@@ -69,14 +130,37 @@ Ask which viewport each Figma URL corresponds to. Valid viewports:
 
 If only one URL is provided, the document has no viewport variations.
 
+### Auto mode defaults
+
+When auto mode is active and DA destination was not provided in the
+arguments, generate it automatically:
+
+```bash
+LDAP=$(whoami)
+RANDOM_SUFFIX=$(openssl rand -hex 3)
+```
+
+- **Organization**: `adobecom`
+- **Repository**: `milo`
+- **Path**: `drafts/$LDAP/block-$RANDOM_SUFFIX`
+
+Do not ask the user for org, repo, or path in auto mode.
+
 ---
 
 ## Phase 1 — Gather requirements
 
-### 1a. Collect Figma frames
+### 1a. Collect inputs
 
-Ask the user for Figma frame URL(s). Each URL corresponds to a
-viewport. At minimum one frame is required.
+Collect Figma frame URLs per the Inputs table above. The media
+folder is derived automatically in Phase 4c.
+
+**Auto mode**: if DA destination was not provided in arguments, use
+the auto-generated defaults from the Inputs section. Do not prompt
+the user for org, repo, or path.
+
+**Interactive mode**: collect DA destination (org, repo, path) from
+the user.
 
 ### 1b. Confirm block name (BLOCKING)
 
@@ -85,25 +169,15 @@ the frame name. Look for a recognizable block name in the frame
 label or parent component name (e.g. "aside", "marquee", "brick",
 "media", "editorial-card").
 
-Present the suggested name and ask the user to confirm or provide
-an alternative. This name becomes the class on the block's outer
-`<div>`.
+This name becomes the class on the block's outer `<div>`.
 
-> **STOP**: Do NOT proceed to Phase 2 until the user explicitly
-> confirms the block name. If the user provides a different name,
-> use theirs. If they do not respond, wait.
+**Auto mode**: accept the inferred name (or the override from
+arguments) and proceed.
 
-### 1c. Collect DA destination
+**Default**: present the suggested name and ask the user to confirm
+or provide an alternative. Do NOT proceed until the user confirms.
 
-Ask for:
-- **Organization** (e.g. `adobe`)
-- **Repository** (e.g. `my-site`)
-- **File path** (e.g. `docs/my-page.html`)
-
-The media folder is derived automatically in Phase 4c using the
-dot-prefixed shadow folder convention.
-
-### 1d. Confirm before proceeding
+### 1c. Confirm before proceeding
 
 ```
 Block name:    <name>
@@ -112,7 +186,9 @@ DA target:     <org>/<repo>/<path>
 Media folder:  <org>/<repo>/<media-folder>/
 ```
 
-Wait for user confirmation.
+**Auto mode**: proceed without waiting.
+
+**Default**: wait for user confirmation.
 
 ---
 
@@ -121,19 +197,14 @@ Wait for user confirmation.
 **Load `references/token-mapping.md` now.**
 
 For each provided Figma frame, **load `agents/figma-content-extractor.md`**
-and follow its procedure. If multiple frames are provided, run
-extractions in parallel.
-
-Provide each extraction with:
-- The Figma frame URL (fileKey and nodeId)
-- The viewport label (mobile, tablet, or desktop)
+and follow its procedure. Run extractions in parallel if multiple.
 
 Each extraction returns:
 - Icon (Figma asset URL + node ID + alt text, if present)
 - Eyebrow text (if present)
 - Heading text + level (h1-h4)
 - Body text + size class (body-lg, body-md, body-sm, body-xs)
-- Links (display text + CTA style: primary/secondary/plain, 0 or more)
+- Links (display text + CTA style: primary/secondary/plain)
 - Background (color string, or Figma asset URL + node ID if image)
 - Foreground (Figma asset URL + node ID, if present)
 - Additional media (if present)
@@ -146,123 +217,81 @@ Each extraction returns:
 Compare extracted content across viewports to determine what needs
 explicit authoring vs what can be inherited.
 
-### Inheritance rules
+Viewports inherit upward: mobile → tablet → desktop. See
+`references/authoring-pattern.md` for the full inheritance table.
 
-Viewports inherit upward: mobile -> tablet -> desktop. See
-`references/authoring-pattern.md` for the full inheritance table
-and partial viewport HTML patterns.
+### Comparison and diff table
 
-### Comparison checklist
-
-For each viewport pair (mobile->tablet, tablet->desktop), compare:
-- Icon: same or different?
-- Eyebrow text: same or different?
-- Heading text and level: same or different?
-- Body text and size: same or different? (size change triggers a viewport variant)
-- Links: same count and text?
-- Background: same color/image?
-- Foreground: same or different?
-
-### Present diff table
+For each viewport pair (mobile→tablet, tablet→desktop), compare
+every element (icon, eyebrow, heading, body, links, background,
+foreground). Present results as a diff table:
 
 ```
 Element          | Mobile        | Tablet       | Desktop
 ---------------------------------------------------------
-Icon             | sparkle.svg   | = (inherit)  | = (inherit)
-Eyebrow          | "New"         | = (inherit)  | "Updated"
 Heading (h3)     | "Get started" | = (inherit)  | "Get started today"
-Body (body-md)   | "Lorem..."    | = (inherit)  | "Different text..."
-Links            | 2 links       | = (inherit)  | 1 link
 Background       | #1a1a1a       | gradient     | gradient
 Foreground       | hero.png      | = (inherit)  | hero-wide.png
-
-Viewport sections needed: Mobile + Tablet (bg only) + Desktop
 ```
+
+### Image comparison
+
+Figma generates unique asset URLs per node even when the underlying
+image is identical. After downloading in Phase 4, compare with
+`sips -g pixelWidth -g pixelHeight`. Same dimensions = same image;
+mark as `= (inherit)` and do not upload duplicates.
 
 ### Body size variant
 
-Check the body size from each viewport's extraction. `body-md` is
-the default and needs no variant. `body-sm` or `body-lg` must be
-declared.
+`body-md` is the default (no variant needed). Other sizes must be
+declared:
 
-**Same body size across all viewports:** add it as a variant on the
-block header.
+- **Same across viewports**: add to block header, e.g.
+  `<p>aside (body-sm)</p>`.
+- **Differs per viewport**: base size on block header, override in
+  viewport row, e.g. `<p>Tablet-viewport (body-lg)</p>`.
 
-- `aside` + body-sm → `<p>aside (body-sm)</p>` in the header row
-- `aside` + body-lg → `<p>aside (body-lg)</p>` in the header row
+Variants are comma-separated in parentheses.
 
-**Body size differs per viewport:** declare the base (mobile) size
-on the block header, then override in the viewport row.
+**Auto mode**: proceed without waiting.
 
-- Mobile body-md, Desktop body-lg →
-  - Header: `<p>aside</p>`
-  - Desktop row: `<tr><td colspan="2"><p>Desktop-viewport (body-lg)</p></td></tr>`
-- Mobile body-sm, Tablet body-lg →
-  - Header: `<p>aside (body-sm)</p>`
-  - Tablet row: `<tr><td colspan="2"><p>Tablet-viewport (body-lg)</p></td></tr>`
-
-Variants are comma-separated inside parentheses in both the block
-header and viewport rows; they are text content parsed at render time.
-
-Wait for user confirmation of the diff analysis.
+**Default**: wait for user confirmation of the diff analysis.
 
 ---
 
 ## Phase 4 — Download and prepare media
 
-Collect all Figma asset URLs from Phase 2 and download them
-locally. This is **required**, not optional. We upload assets
-directly to the DA admin API, so they must exist on disk first.
+Collect all Figma asset URLs from Phase 2 and download them locally.
 
 > **Critical constraints**
 >
 > - **No compression, no resizing, no Python scripts.** DA and EDS
 >   handle image optimization.
 > - **Never read image data into context.** Do not use the Read
->   tool on image files. Do not `cat` them. Do not print base64
->   output to inspect it.
+>   tool on image files. Do not `cat` or print base64 output.
 
-### 4a. Collect asset URLs
+### 4a. Collect and deduplicate asset URLs
 
-From the Phase 2 extraction output, collect every Figma asset URL:
-- Icon asset URLs
-- Background image asset URLs (per viewport)
-- Foreground image asset URLs (per viewport)
-- Any additional media asset URLs
-
-Deduplicate: if the same asset appears across viewports (e.g. a
-shared icon), include it only once.
+From Phase 2, collect every Figma asset URL (icons, backgrounds,
+foregrounds, additional media). Deduplicate:
+- Same Figma URL across viewports → include once.
+- Different URLs but identical dimensions (Phase 3 image comparison)
+  → keep only the mobile variant.
 
 ### 4b. Download assets locally
-
-Download each Figma asset to a local folder. **Use descriptive
-filenames with proper extensions** (e.g. `bg-mobile.png`,
-`adobe-firefly-icon.svg`). Figma MCP asset URLs serve files
-without extensions, so you must determine the type yourself.
 
 ```bash
 mkdir -p /tmp/figma-media/<page-name>
 curl -sL "<figma-asset-url>" -o /tmp/figma-media/<page-name>/<filename>
 ```
 
-After downloading, verify the file type:
-```bash
-file /tmp/figma-media/<page-name>/<filename>
-```
+Use descriptive filenames with proper extensions. Verify type with
+`file <path>`. Common: SVG → `.svg`, PNG → `.png`, JPEG → `.jpg`.
 
-Common types from Figma:
-- `SVG Scalable Vector Graphics image` → use `.svg` extension
-- `PNG image data` → use `.png` extension
-- `JPEG image data` → use `.jpg` extension
+#### SVG icons
 
-#### SVG icons follow a different path than raster images
-
-Icons in Figma are almost always multi-layer (background +
-symbol/text). `get_design_context` decomposes them into separate
-per-layer asset URLs, each incomplete. **Do not use individual
-layer asset URLs for icons.**
-
-Instead, export the composite SVG via the Figma Plugin API:
+Icons in Figma are multi-layer; individual layer asset URLs are
+incomplete. Export the composite via the Figma Plugin API:
 
 ```javascript
 // use_figma: Export icon node as composite SVG
@@ -272,198 +301,78 @@ const svgString = String.fromCharCode(...svgBytes);
 return svgString;
 ```
 
-Save the returned SVG content to a local `.svg` file. Then:
-
-1. Upload the SVG to the **same directory as the document** via
-   `POST admin.da.live/source/<org>/<repo>/<parent-path>/<icon-name>.svg`.
-2. **Preview** the SVG via
-   `POST admin.hlx.page/preview/<org>/<repo>/main/<parent-path>/<icon-name>.svg`.
-3. Use the resulting **`aem.page` preview URL** in the HTML as
-   both the `href` and the display text of the icon `<a>` tag:
-   ```html
-   <p><a href="https://main--<repo>--<org>.aem.page/<path>/<icon>.svg">https://main--<repo>--<org>.aem.page/<path>/<icon>.svg</a></p>
-   ```
+Save to a local `.svg` file. Then:
+1. Upload to DA: `POST admin.da.live/source/<org>/<repo>/<parent-path>/<icon>.svg`
+2. Preview: `POST admin.hlx.page/preview/<org>/<repo>/main/<parent-path>/<icon>.svg`
+3. In HTML, use the `aem.page` preview URL as both `href` and
+   display text of the icon `<a>` tag.
 
 ### 4c. Compute DA asset paths
 
-Since we upload assets directly, compute the final
-`content.da.live` URLs upfront. Use the **dot-prefixed shadow
-folder** convention:
-
+Use the **dot-prefixed shadow folder** convention:
 ```
 https://content.da.live/<org>/<repo>/<parent-path>/.<page-name>/<filename>
 ```
 
-Example: page at `homepage/drafts/<your-ldap>/my-block.html`
-stores media at:
-```
-https://content.da.live/<org>/<repo>/homepage/drafts/<your-ldap>/.my-block/bg-mobile.png
-```
-
-These URLs go directly into the HTML in Phase 5.
-
 ### 4d. Color backgrounds
 
-Solid colors, gradients, and semi-transparent values are not
-assets. They are placed as text in the media column:
-- `rgb(255 255 255 / 0)`
-- `#1a1a1a`
-- `linear-gradient(135deg, #1a1a1a, #2d2d2d)`
+Solid colors, gradients, and semi-transparent values go as text in
+the media column (e.g. `#1a1a1a`, `linear-gradient(...)`).
 
 ---
 
 ## Phase 5 — Build HTML document
 
-**Load `references/authoring-pattern.md` now.**
+**Load `references/authoring-pattern.md` now** and follow its
+document skeleton, viewport rows, content columns, and media
+placement patterns exactly.
 
-### Document skeleton
-
-The block is authored as an explicit `<table>` so that media can
-stack in the right column while the text column spans via `rowspan`.
-The surrounding `section-metadata` and `metadata` sections remain
-div-based.
-
-```html
-<body>
-  <header></header>
-  <main>
-    <div>
-      <table>
-        <tbody>
-          <tr><td colspan="2"><p>block-name (variant1, variant2)</p></td></tr>
-          <!-- viewport and content rows -->
-        </tbody>
-      </table>
-      <div class="section-metadata">
-        <div>
-          <div>style</div>
-          <div>container, wide</div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="metadata">
-        <div>
-          <div>foundation</div>
-          <div>c2</div>
-        </div>
-      </div>
-    </div>
-  </main>
-  <footer></footer>
-</body>
-```
-
-The first row of the block table is the header: a single
-`<td colspan="2">` containing `<p>block-name (variant1, variant2)</p>`.
-Variants go in parentheses, comma-separated. If there are no
-variants, just `<p>block-name</p>`.
-
-The `section-metadata` block is placed in the **same section** as
-the content block (same parent `<div>`, no `---` separator). It
-sets `style: container, wide` for the section layout.
-
-The `metadata` section with `foundation: c2` is **required** for C2
-blocks. Without it, the EDS block loader will not resolve blocks
-from `libs/c2/blocks/` and the block JS/CSS will fail to load.
-
-### Assembly rules
-
-**No viewport variations** (single frame, or all viewports identical):
-the header row is followed directly by the content row(s); no
-viewport rows.
-
-**With viewport variations**: add viewport rows and content rows
-per the authoring pattern. Only include viewports that differ from
-their parent. Each viewport row is a single `<td colspan="2">`
-containing the viewport keyword.
-
-For each viewport section:
-
-**Left column text cell** (use `rowspan="N"` where N = number of
-stacked media sub-rows on the right; omit `rowspan` when N=1):
-1. Icon (SVG): `<p><a href="<aem.page-preview-url>"><aem.page-preview-url></a></p>` (if present). Both href and display text are the preview URL. See Phase 4b for SVG icon upload details.
-2. Eyebrow: `<p>eyebrow text</p>` (if present)
-3. Heading: `<hN>text</hN>` where N is from token mapping. Add
-   `<strong>` inside if the Figma text is bold.
-4. Body: `<p>text</p>`
-5. Links: wrap each `<a>` based on its CTA style:
-   - Primary CTA (filled button): `<strong><a href="https://www.adobe.com/">text</a></strong>`
-   - Secondary CTA (outline/ghost button): `<em><a href="https://www.adobe.com/">text</a></em>`
-   - Plain link (text-only, no button styling): `<a href="https://www.adobe.com/">text</a>`
-
-**Right column media cells** (one `<td>` per media element, each in
-its own `<tr>` after the first):
-- Color background: the CSS value as text content inside the `<td>`
-- Image media: `<td><picture><img src="<content.da.live-url>" alt="..."></picture></td>`
-
-Order in the right column: background first, foreground second,
-then any additional media. The first media sub-row shares the `<tr>`
-with the text cell; every subsequent media sub-row is its own `<tr>`
-containing only the right `<td>`.
+Key reminders:
+- The block is a `<table>`; section-metadata and metadata remain
+  div-based.
+- First row: `<td colspan="2">` with `<p>block-name (variants)</p>`.
+- `section-metadata` in the **same section** as the block:
+  `style: container, wide`.
+- `metadata` section (separate `<div>`) with `foundation: c2` is
+  **required**.
+- Left column: icon → eyebrow → heading → body → links. Use
+  `rowspan` when multiple media sub-rows exist on the right.
+- CTA wrapping: primary → `<strong><a>`, secondary → `<em><a>`,
+  plain → bare `<a>`. All hrefs use `https://www.adobe.com/`.
+- Right column order: background first, foreground second. First
+  media shares the `<tr>` with text; subsequent media get own `<tr>`.
+- Icon SVGs: use the `aem.page` preview URL as both `href` and
+  display text.
 
 ### Save HTML to disk
 
-Write the HTML file to the upload folder, mirroring the DA path:
-```
-/tmp/da-upload/<da-path>/<page-name>.html
-```
+Write to `/tmp/da-upload/<da-path>/<page-name>.html`.
 
-Example: `/tmp/da-upload/homepage/drafts/<your-ldap>/my-page.html`
+**Auto mode**: proceed to upload without showing the HTML.
 
-### Present HTML for review
-
-Show the constructed HTML to the user and ask for confirmation
-before proceeding to upload.
+**Default**: show the HTML to the user and ask for confirmation.
 
 ---
 
 ## Phase 6 — Upload to DA
 
-Upload images and HTML directly to the DA admin API. No
-intermediate tools needed.
+**Auto mode**: proceed without asking. **Default**: present the
+upload plan (HTML path, asset count, target) and wait for confirmation.
 
-All curl commands in Phases 6 and 7 use:
-```bash
-TOKEN=$(da-auth-helper token 2>/dev/null)
-```
+All curl commands use: `TOKEN=$(da-auth-helper token 2>/dev/null)`
 
-### 6a. Ask the user
-
-Present the upload plan and ask:
-
-```
-DA upload:
-  HTML:       /tmp/da-upload/<da-path>/<page-name>.html
-  Assets:     <N> images in /tmp/figma-media/<page-name>/
-  Target:     <org>/<repo>
-
-Ready to upload?
-```
-
-Wait for user confirmation before proceeding.
-
-### 6b. Check token
-
-Verify `da-auth-helper` is installed and can provide a token:
+### 6a. Check token
 
 ```bash
 da-auth-helper token >/dev/null 2>&1 && echo "Token OK" || echo "No token"
 ```
 
-If the command fails, instruct the user to:
-1. Install: `npm install -g github:adobe-rnd/da-auth-helper`
-2. Log in: `da-auth-helper login` (opens browser for Adobe IMS; choose the **Skyline** profile when prompted)
-3. Verify: `da-auth-helper token`
+If it fails: install `npm install -g github:adobe-rnd/da-auth-helper`,
+log in `da-auth-helper login` (choose **Skyline** profile), verify.
 
-Wait for the user to confirm before continuing. The token is
-cached at `~/.aem/da-token.json` and refreshed automatically
-when it expires.
+### 6b. Upload images
 
-### 6c. Upload images
-
-Upload each image to the shadow folder via the DA admin API.
-Use `POST` with multipart form data. Run uploads in parallel.
+Upload each to the shadow folder in parallel:
 
 ```bash
 curl -s -w "\n%{http_code}" -X POST \
@@ -472,18 +381,10 @@ curl -s -w "\n%{http_code}" -X POST \
   -F "data=@/tmp/figma-media/<page-name>/<filename>;type=<mime-type>"
 ```
 
-MIME types:
-- `.png` → `image/png`
-- `.jpg` / `.jpeg` → `image/jpeg`
-- `.svg` → `image/svg+xml`
-- `.webp` → `image/webp`
+MIME: `.png` → `image/png`, `.jpg` → `image/jpeg`,
+`.svg` → `image/svg+xml`, `.webp` → `image/webp`. Expect **201**.
 
-Expect **201 Created** for each file. If you get 401, the token
-has expired; ask the user to refresh it.
-
-### 6d. Upload HTML
-
-Upload the HTML file to DA:
+### 6c. Upload HTML
 
 ```bash
 curl -s -w "\n%{http_code}" -X POST \
@@ -493,125 +394,72 @@ curl -s -w "\n%{http_code}" -X POST \
   --data-binary @/tmp/da-upload/<da-path>/<page-name>.html
 ```
 
-Expect **200 OK** or **201 Created**.
+Expect **200** or **201**.
 
-### 6e. Verify
+### 6d. Verify and report
 
-After uploading, verify images are accessible:
+Verify images return **200** from their `content.da.live` URLs.
 
-```bash
-curl -s -o /dev/null -w "%{http_code}" \
-  "https://content.da.live/<org>/<repo>/<parent-path>/.<page-name>/<filename>" \
-  -H "Authorization: Bearer $TOKEN"
-```
+On success, report:
+`Edit: https://da.live/edit#/<org>/<repo>/<da-path>/<page-name>`
 
-Expect **200** for each image.
+### Error handling (Phases 6 and 7)
 
-### 6f. Handle result
-
-**On success:** report the DA edit URL:
-- Edit: `https://da.live/edit#/<org>/<repo>/<da-path>/<page-name>`
-
-**On failure:**
-1. 401 → token expired, ask the user to run `da-auth-helper login` (choose the **Skyline** profile).
-2. 403 → check org/repo permissions.
-3. Images 404 after upload → verify the POST returned 201 and
-   the path matches the HTML reference exactly.
+- **401** → token expired; run `da-auth-helper login` (Skyline).
+- **403** → org/repo permissions issue.
+- **Images 404** after upload → verify POST returned 201 and path
+  matches HTML reference exactly.
 
 ---
 
 ## Phase 7 — Preview & Publish
 
-After a successful upload, ask the user whether they want to
-preview and publish the document.
+**Auto mode**: proceed directly to 7a.
 
-### 7a. Ask user
+**Default**: ask the user whether to preview and publish. If they
+decline, skip to Phase 8.
 
-```
-Document uploaded. Would you like to preview and publish? (y/n)
-```
+### 7a. Path safety check (BLOCKING)
 
-If the user declines, skip to Phase 8.
-
-### 7b. Path safety check (BLOCKING)
-
-Check whether the DA file path contains `/drafts/`.
-
-**Path contains `/drafts/`:** safe to proceed. Continue to 7c.
-
-**Path does NOT contain `/drafts/`:**
-
-Present this warning and wait for explicit confirmation:
+If the path does **not** contain `/drafts/`, present this warning
+and wait for explicit confirmation:
 
 ```
-⚠️  You're about to preview and publish a document on production.
-Are you sure you want to proceed? (y/n)
+⚠️  You're about to publish to production. Are you sure? (y/n)
 ```
 
-If the user declines, skip to Phase 8.
+> **STOP**: This check is mandatory regardless of mode. Never bypass.
 
-> **STOP**: Do NOT call the preview or publish APIs without passing
-> this check. This guardrail is mandatory and cannot be bypassed,
-> even if the user already confirmed the upload in Phase 6a. The
-> two confirmations serve different purposes.
+If the path contains `/drafts/`, proceed without warning.
 
-### 7c. Preview
-
-POST to the EDS admin API to generate a preview:
+### 7b. Preview and publish
 
 ```bash
+# Preview
 curl -s -w "\n%{http_code}" -X POST \
   "https://admin.hlx.page/preview/<org>/<repo>/main/<da-path>/<page-name>" \
   -H "Authorization: Bearer $TOKEN"
-```
 
-Expect **200 OK**. On success, report the preview URL:
-```
-Preview: https://main--<repo>--<org>.aem.page/<da-path>/<page-name>
-```
-
-### 7d. Publish
-
-POST to the EDS admin API to publish. If the document contains SVG
-icons (uploaded and previewed in Phase 4b), publish those first,
-then publish the document.
-
-```bash
-# Publish each SVG icon (if any)
-curl -s -w "\n%{http_code}" -X POST \
-  "https://admin.hlx.page/live/<org>/<repo>/main/<parent-path>/<icon-name>.svg" \
-  -H "Authorization: Bearer $TOKEN"
-
-# Publish the document
+# Publish SVG icons first (if any), then the document
 curl -s -w "\n%{http_code}" -X POST \
   "https://admin.hlx.page/live/<org>/<repo>/main/<da-path>/<page-name>" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-Expect **200 OK**. On success, report the live URL:
-```
-Live: https://main--<repo>--<org>.aem.live/<da-path>/<page-name>
-```
+Report on success:
+- `Preview: https://main--<repo>--<org>.aem.page/<da-path>/<page-name>`
+- `Live: https://main--<repo>--<org>.aem.live/<da-path>/<page-name>`
 
-### 7e. Handle errors
-
-- **200**: success, show URLs above.
-- **401**: token expired, ask the user to run `da-auth-helper login` (choose the **Skyline** profile).
-- **403**: permissions issue, inform user.
+Errors: see Phase 6 error handling.
 
 ---
 
 ## Phase 8 — Cleanup
 
-After a successful upload, ask the user if they want to keep or
-delete the local folders:
+**Auto mode**: delete `/tmp/da-upload/` and `/tmp/figma-media/`
+automatically.
 
-```
-Upload complete. Delete /tmp/da-upload/ and /tmp/figma-media/ ? (y/n)
-```
-
-If the upload failed or the user wants to keep the folders, leave
-them in place.
+**Default**: ask the user whether to keep or delete them.
 
 ---
 
@@ -625,9 +473,8 @@ Output:
    link count.
 4. **Placeholder links**: remind the user to update the dummy
    `https://www.adobe.com/` URLs with real destinations.
-5. **Fallback classifications**: any elements where tokens were not
-   found and visual heuristics were used.
+5. **Fallback classifications**: elements where visual heuristics
+   were used instead of tokens.
 6. **Obstacles encountered**: Figma ambiguities, missing tokens, or
-   content that required manual judgment.
-7. **Local files**: paths to `/tmp/da-upload/` (HTML) and
-   `/tmp/figma-media/` (images), if not deleted.
+   content requiring manual judgment.
+7. **Local files**: paths to temp folders, if not deleted.
