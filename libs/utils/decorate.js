@@ -726,7 +726,7 @@ function parseViewportContent(el) {
   return { hasViewportVariations: true, content, allVariants };
 }
 
-function applyViewportContent(el, viewports) {
+function applyViewportContent(el, viewports, onViewportChange) {
   if (!viewports.hasViewportVariations) return;
 
   const { content, allVariants } = viewports;
@@ -747,6 +747,7 @@ function applyViewportContent(el, viewports) {
       if (variants.length) el.classList.add(...variants);
       el.replaceChildren(...children);
       decorateTextOverrides(el);
+      onViewportChange?.(viewport, el);
     };
 
     setContent();
@@ -756,17 +757,20 @@ function applyViewportContent(el, viewports) {
 
 /* decorateFn receives:
  * - block — the element to decorate (viewport container or el itself)
- * - root  — for checking base classes on detached containers */
-export function decorateViewportContent(el, decorateFn) {
+ * - root  — for checking base classes on detached containers
+ * onViewportChange(viewport, el) runs after each swap on the persistent
+ * block root, for side effects that live outside the swapped subtree. */
+export function decorateViewportContent(el, decorateFn, onViewportChange) {
   const viewports = parseViewportContent(el);
   if (viewports.hasViewportVariations) {
     Object.values(viewports.content).forEach(({ container }) => {
       decorateFn(container, el);
     });
-    applyViewportContent(el, viewports);
+    applyViewportContent(el, viewports, onViewportChange);
   } else {
     decorateFn(el, el);
     decorateTextOverrides(el);
+    onViewportChange?.(undefined, el);
   }
   return viewports;
 }

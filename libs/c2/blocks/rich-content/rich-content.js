@@ -1,6 +1,12 @@
 import { decorateBlockText, decorateViewportContent } from '../../../utils/decorate.js';
 import { createTag } from '../../../utils/utils.js';
 
+const HERO_GRADIENT_PROP = '--rc-hero-gradient';
+
+function isCssGradient(value) {
+  return /^(repeating-)?(linear|radial|conic)-gradient\(.+\)$/i.test(value?.trim());
+}
+
 function hangOpeningQuote(header) {
   if (!header) return;
   const openingQuotes = /^(\p{Pi})/u;
@@ -33,8 +39,21 @@ function decorate(block) {
   foreground?.classList.add('foreground');
   decorateText(content);
   promoteParagraphTitle(content);
+
+  const bgCell = foreground?.children[1];
+  if (bgCell && !bgCell.querySelector('picture, img') && isCssGradient(bgCell.textContent)) {
+    bgCell.classList.add('hero-gradient-source');
+  }
+}
+
+function applyHeroGradient(viewport, el) {
+  const section = el.closest('.section');
+  if (!section) return;
+  const source = el.querySelector('.hero-gradient-source');
+  if (source) section.style.setProperty(HERO_GRADIENT_PROP, source.textContent.trim());
+  else section.style.removeProperty(HERO_GRADIENT_PROP);
 }
 
 export default function init(el) {
-  decorateViewportContent(el, decorate);
+  decorateViewportContent(el, decorate, applyHeroGradient);
 }
