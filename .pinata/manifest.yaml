@@ -1,0 +1,5 @@
+# Milo tenant contract — identity the engine loads when a run targets adobecom/milo.
+# Schema: TenantManifest (src/workflows/loader.py). extra keys are forbidden.
+org: acom
+product: milo
+repo: adobecom/milo

@@ -1,0 +1,37 @@
+# Milo verification contract — the checks a harness-generated change must pass.
+# Schema: GatesManifest / GateDefinition (packages/verification/gate_defs.py).
+# extra keys are forbidden; failure_route must be a valid FailureRoute.
+
+# Run once in the materialized worktree before any gate so command gates use
+# Milo's pinned toolchain (matches package-lock.json) rather than an ambient one.
+provision: npm ci
+
+# Failed blocking gates re-enter codegen with the failure as feedback, up to N
+# candidates total, then escalate to a human.
+regeneration:
+  max_candidates: 3
+
+gates:
+  lint:
+    template: command
+    name: Milo lint (ESLint + Stylelint)
+    cmd: npm run lint
+    blocking: true
+    failure_route: repair_loop
+
+  unit-tests:
+    template: command
+    name: Milo unit tests (web-test-runner)
+    cmd: npm test
+    timeout_s: 1800
+    blocking: true
+    failure_route: repair_loop
+
+  adversary:
+    template: adversary
+    name: Adversarial review (INV-4 merge gate)
+    description: >-
+      An independent adversary (different model class, no producer context)
+      reviews the diff; the change merges on its verdict, not the producer's.
+    blocking: true
+    failure_route: escalate_to_human
