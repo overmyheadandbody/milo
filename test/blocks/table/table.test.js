@@ -116,23 +116,30 @@ describe('table and tablemetadata', () => {
     });
   });
 
-  describe('mobile aria-label test setup', () => {
+  describe('mobile accessible filter label test', () => {
     beforeEach(() => {
       const tables = document.querySelectorAll('.table');
       tables.forEach((t) => init(t));
       window.dispatchEvent(new Event(MILO_EVENTS.DEFERRED));
     });
 
-    it('should apply aria-label to all selects within .filters on mobile', async () => {
+    it('each filter select has an associated label and unique accessible name on mobile', async () => {
       window.innerWidth = 375;
       window.dispatchEvent(new Event('resize'));
       const filters = await waitForElement('.filters');
-      const selectElements = filters.querySelectorAll('select');
-      const ariaLabel = await replaceKey('choose-table-column', config);
+      const selectElements = [...filters.querySelectorAll('select')];
+      const labelBase = await replaceKey('choose-table-column', config);
 
-      selectElements.forEach((selectElement) => {
-        expect(selectElement.getAttribute('aria-label')).to.equal(ariaLabel);
+      selectElements.forEach((selectEl) => {
+        expect(selectEl.id, 'select must have an id').to.be.a('string').and.not.be.empty;
+        const label = filters.querySelector(`label[for="${selectEl.id}"]`);
+        expect(label, `label[for="${selectEl.id}"] must exist`).to.exist;
+        expect(label.textContent.trim(), 'label must have non-empty text').to.not.be.empty;
+        expect(label.textContent.trim(), 'label text must start with the localized base').to.include(labelBase);
       });
+
+      const labelTexts = selectElements.map((s) => filters.querySelector(`label[for="${s.id}"]`).textContent.trim());
+      expect(labelTexts[0], 'two selects must have distinct accessible names').to.not.equal(labelTexts[1]);
     });
   });
 });

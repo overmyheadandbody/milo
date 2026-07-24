@@ -174,18 +174,15 @@ function handleAddOnContent(table) {
 async function setAriaLabelForIcons(el) {
   const config = getConfig();
   const expendableIcons = el.querySelectorAll('.icon.expand[role="button"]');
-  const selectFilters = el.parentElement.querySelectorAll('.filters .filter');
-  const ariaLabelElements = [...selectFilters, ...expendableIcons];
 
-  if (!ariaLabelElements.length) {
+  if (!expendableIcons.length) {
     return;
   }
 
-  const ariaLabels = await replaceKeyArray(['toggle-row', 'choose-table-column'], config);
+  const [toggleLabel] = await replaceKeyArray(['toggle-row'], config);
 
-  ariaLabelElements.forEach((element) => {
-    const labelIndex = element.classList.contains('filter') ? 1 : 0;
-    element.setAttribute('aria-label', ariaLabels[labelIndex]);
+  expendableIcons.forEach((element) => {
+    element.setAttribute('aria-label', toggleLabel);
   });
 }
 
@@ -493,7 +490,7 @@ function applyStylesBasedOnScreenSize(table, originTable) {
     }
   };
 
-  const mobileRenderer = () => {
+  const mobileRenderer = async () => {
     table.dispatchEvent(tableHighlightLoadedEvent);
     const headings = table.querySelectorAll('.row-heading .col');
     const headingsLength = Array.from(headings)
@@ -571,6 +568,8 @@ function applyStylesBasedOnScreenSize(table, originTable) {
     // Remove filter if table there are only 2 columns
     const filter = isMerch ? headingsLength > 2 : headingsLength > 2;
     if (!table.parentElement.querySelector('.filters') && filter) {
+      const config = getConfig();
+      const [labelBase] = await replaceKeyArray(['choose-table-column'], config);
       const filters = createTag('div', { class: 'filters' });
       const filter1 = createTag('div', { class: 'filter-wrapper' });
       const filter2 = createTag('div', { class: 'filter-wrapper' });
@@ -586,13 +585,19 @@ function applyStylesBasedOnScreenSize(table, originTable) {
       const colSelect1 = colSelect0.cloneNode(true);
       colSelect0.dataset.filterIndex = 0;
       colSelect1.dataset.filterIndex = 1;
+      const selectId0 = `filter-select-${tableIndex}-0`;
+      const selectId1 = `filter-select-${tableIndex}-1`;
+      colSelect0.id = selectId0;
+      colSelect1.id = selectId1;
+      const label0 = createTag('label', { for: selectId0, class: 'filter-label' }, `${labelBase} 1`);
+      const label1 = createTag('label', { for: selectId1, class: 'filter-label' }, `${labelBase} 2`);
       const visibleCols = table.querySelectorAll(`.col-heading:not([style*="display: none"], .hidden${isMerch ? '' : ', .col-1'})`);
       const option0 = colSelect0.querySelectorAll('option').item(visibleCols.item(0).dataset.colIndex - (isMerch ? 1 : 2));
       const option1 = colSelect1.querySelectorAll('option').item(visibleCols.item(1).dataset.colIndex - (isMerch ? 1 : 2));
       if (option0) option0.selected = true;
       if (option1) option1.selected = true;
-      filter1.append(colSelect0);
-      filter2.append(colSelect1);
+      filter1.append(label0, colSelect0);
+      filter2.append(label1, colSelect1);
       filters.append(filter1, filter2);
       filter1.addEventListener('change', filterChangeEvent);
       filter2.addEventListener('change', filterChangeEvent);
