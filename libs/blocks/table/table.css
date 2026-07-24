@@ -756,6 +756,12 @@
   text-align: center;
 }
 
+.filter-label {
+  display: block;
+  font-size: var(--type-body-xs-size, 0.75rem);
+  margin-block-end: 4px;
+}
+
 .filter {
   border: none;
   font-size: 1rem;
